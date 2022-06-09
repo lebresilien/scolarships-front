@@ -1,0 +1,28 @@
+.hover-icon {
+    color: rgb(107 114 128);
+}
+.hover-icon:hover {
+    color: rgb(156 163 175);
+}
+.border-eee {
+    border: 1px solid rgb(219, 218, 218);
+}
+.border-eee:hover {
+    border: 1px solid rgb(200, 198, 198);
+}
+.icon-color {
+   /* color: rgb(31, 100, 184) */
+   color: white;
+}
+.basis-1-4 {
+    flex-basis: 25%;
+}
+
+
+.css-1s2u09g-control {
+    background-color: '';
+}
+
+
+
+

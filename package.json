@@ -1,0 +1,45 @@
+{
+  "name": "scolarships",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "@headlessui/react": "^1.4.2",
+    "@react-pdf/renderer": "^2.1.2",
+    "@reduxjs/toolkit": "^1.7.2",
+    "@tailwindcss/forms": "^0.2.1",
+    "autoprefixer": "^10.1.0",
+    "axios": "^0.21.1",
+    "file-saver": "^2.0.5",
+    "jspdf": "^2.5.1",
+    "next": "^12.0.4",
+    "postcss": "^8.2.2",
+    "react": "^17.0.2",
+    "react-confirm-alert": "^2.8.0",
+    "react-data-table-component": "^7.4.7",
+    "react-dom": "^17.0.2",
+    "react-icons": "^4.3.1",
+    "react-redux": "^7.2.6",
+    "react-select": "^5.2.2",
+    "react-switch": "^6.0.0",
+    "react-toastify": "^8.1.1",
+    "styled-components": "^5.3.3",
+    "swr": "^0.3.11",
+    "tailwindcss": "^2.0.2"
+  },
+  "devDependencies": {
+    "@babel/eslint-parser": "^7.12.1",
+    "@next/eslint-plugin-next": "^10.0.4",
+    "babel-eslint": "^10.1.0",
+    "eslint": "^7.17.0",
+    "eslint-config-prettier": "^7.1.0",
+    "eslint-plugin-next": "^0.0.0",
+    "eslint-plugin-prettier": "^3.3.0",
+    "eslint-plugin-react": "^7.22.0",
+    "prettier": "2.2.1"
+  }
+}
