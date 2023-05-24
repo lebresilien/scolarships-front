@@ -69,10 +69,9 @@ const Academy = () => {
                             <Button
                                 onClick={() => {
 
-                                    updateAcademy({ academy_id, setActive, onClose, setWaiting })
+                                    updateAcademy({ academy_id, setActive, onClose, setWaiting, academies, setAcademies })
 
                                 }}
-                                passed={true}
                                 className="inline-flex items-center px-2 py-2 bg-red-500 border border-transparent rounded-md font-semibold text-medium text-white tracking-widest hover:bg-red-600 active:bg-red-600 focus:outline-none focus:border-red-600 focus:ring ring-red-300 disabled:opacity-25 transition ease-in-out duration-150"
                             >
                                 { !waiting ? 'Confirmer' : 'Confirmation ...' }
@@ -105,7 +104,7 @@ const Academy = () => {
         },
         {
             name: 'Operation',
-            selector: row => row.status ? <div className="flex flex-row"> <FaInfoCircle className="cursor-pointer mr-2" onClick={ () => handleDetails(row.id) } size={25} /> <Switch checked={active} onChange={ () => handleChangeActive(row.id) } /></div>: <div className="flex flex-row"> <FaInfoCircle className="cursor-pointer mr-2" onClick={ () => handleDetails(row.id) } size={25} /> <Switch disabled={true} onChange={ () => {} } /></div>
+            selector: row => row.status == 1 ? <div className="flex flex-row"> <FaInfoCircle className="cursor-pointer mr-2" onClick={ () => handleDetails(row.id) } size={25} /> <Switch checked={active} onChange={ () => handleChangeActive(row.id) } /></div>: <div className="flex flex-row"> <FaInfoCircle className="cursor-pointer mr-2" onClick={ () => handleDetails(row.id) } size={25} /> <Switch disabled={true} onChange={ () => {} } /></div>
         }
     ];
   
@@ -144,7 +143,7 @@ const Academy = () => {
 
     const save = (e) => {
         e.preventDefault()
-        addAcademy({ name, setLoading, setErrors})
+        addAcademy({ name, setLoading, setErrors, setAcademies, academies, setActive, setName})
     }
 
     const handleChange = (e) => setName(e.target.value)

@@ -1,11 +1,12 @@
 import { TextField } from '@/components/Styled'
 import Button from '@/components/Button' 
 
-const TitleComponent = ({ save, title, name, handleChange, loading, setShowModal, setUpdate }) => {
+const TitleComponent = ({ save, title, name, handleChange, loading, setShowModal, setUpdate, setName }) => {
      
     const show = () => {
         setShowModal(true)
-        setUpdate  && setUpdate(false) 
+        setUpdate  && setUpdate(false)
+        setName && setName('') 
     }
     
     return (

@@ -1,13 +1,13 @@
 import Button from './Button'
 import Label from './Label'
 import Input from './Input'
-import { Fragment, useState } from 'react'
+import { Fragment, useState, useEffect } from 'react'
 import AuthValidationErrors from '@/components/AuthValidationErrors'
 import { useUser } from '@/hooks/user'
 import { Dialog, Transition } from '@headlessui/react'
 import Select from 'react-select'
 
-function ModalCourse ({ classrooms, open, setOpen, title, setPending, setCourses, update, groups, name, setName, slug, units }) {
+function ModalCourse ({ classrooms, open, setOpen, title, setPending, setCourses, update, groups, name, setName, slug, units, value, setValue }) {
 
     const [loading, setLoading] = useState(false)
     const [errors, setErrors] = useState([])
@@ -58,21 +58,21 @@ function ModalCourse ({ classrooms, open, setOpen, title, setPending, setCourses
 
         {!update ? 
             addCourse({ name, unit_id, selectedCheckbox, setCourses, setLoading, setPending, setErrors }) : 
-            updateCourse({ name, slug, selectedCheckbox, setCourses, setLoading, setPending, setOpen, setErrors })
+            updateCourse({ name, slug, unit_id, selectedCheckbox, setCourses, setLoading, setPending, setOpen, setErrors })
         } 
     }
 
     let options = []
 
     if(units.length != 0 ) {
-
         units.map((unit) => {
             options.push({ value: unit.id, label: unit.name })
         })
-
     }
+
     const handleInputChange = (newValue) => {
        setUnit_id(newValue.value)
+       {update  &&  setValue({value: newValue.value, label: newValue.label})}
     }
 
     return (
@@ -130,18 +130,20 @@ function ModalCourse ({ classrooms, open, setOpen, title, setPending, setCourses
                                                         id="name"
                                                         type="text"
                                                         value={name}
-                                                        className="block mt-1 w-full bg-gray-50 cursor-not-allowed"
+                                                        className="block mt-1 w-full bg-gray-50"
                                                         onChange={event => setName(event.target.value)}
                                                         required
                                                         autoFocus
-                                                        readOnly={update ? true : false}  
+                                                        //readOnly={update ? true : false}  
                                                     />
                                                 </div>
                                             </div>
 
                                             <div className="mt-3 pt-3">
                                                 <Label>Sélectionner la catégorie</Label>
-                                                <Select options={options}  onChange={handleInputChange} />
+                                                {update ? <Select options={options}  onChange={handleInputChange} value={value} /> :
+                                                    <Select options={options}  onChange={handleInputChange} />
+                                                }
                                             </div>
 
                                             <div className="px-4 py-3 sm:px-1 sm:flex sm:flex-row justify-end">

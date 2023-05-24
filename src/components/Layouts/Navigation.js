@@ -9,6 +9,7 @@ import { useRouter } from 'next/router'
 import { useState } from 'react'
 import { toast } from 'react-toastify'
 import ModalProfile from '@/components/ModalProfile'
+import ModalSignature from '@/components/ModalSignature'
 import { useSelector } from 'react-redux'
 
 const Navigation = () => {
@@ -18,6 +19,7 @@ const Navigation = () => {
 
     const [open, setOpen] = useState(false)
     const[showModal, setShowModal] = useState(false)
+    const[showModalSignature, setShowModalSignature] = useState(false)
 
     const user = useSelector((state) => state.userReducer.user)
 
@@ -29,6 +31,12 @@ const Navigation = () => {
                 <ModalProfile 
                     showModal={showModal} 
                     setShowModal={setShowModal} 
+                    notify={toast} 
+                />
+
+                <ModalSignature
+                    showModalSignature={showModalSignature} 
+                    setShowModalSignature={setShowModalSignature} 
                     notify={toast} 
                 />
                 
@@ -62,6 +70,12 @@ const Navigation = () => {
                                 active={router.pathname == '/courses'}>
                                 Matiéres
                             </NavLink>
+
+                            <NavLink
+                                href="/classroom"
+                                active={router.pathname == '/classroom'}>
+                                salles
+                            </NavLink>
                         </div>
                     </div>
 
@@ -90,8 +104,11 @@ const Navigation = () => {
                             }>
 
                             {/* Authentication */}
-                            <DropdownButton onClick={() => setShowModal(showModel => !showModel) }>
+                            <DropdownButton onClick={() => setShowModal(showModal => !showModal) }>
                                 Profile
+                            </DropdownButton>
+                            <DropdownButton onClick={() => setShowModalSignature(showModalSignature => !showModalSignature) }>
+                                Signature
                             </DropdownButton>
                             <DropdownButton>
                                 <Link href="/academy">

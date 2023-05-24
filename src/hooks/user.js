@@ -1,6 +1,5 @@
-import useSWR from 'swr'
 import axios from '@/lib/axios'
-import { useEffect } from 'react'
+
 import { toast } from 'react-toastify';
 
 export const useUser = ({ middleware  } = {}) => {
@@ -177,6 +176,17 @@ export const useUser = ({ middleware  } = {}) => {
             
     }
 
+    const getClasse = async ({ setClassrooms, setPending }) => {
+        await csrf()
+        
+        axios.get('/api/v1/classrooms')
+         .then(res => {
+            setClassrooms(res.data)
+            setPending(false)
+         })
+            
+    }
+
     const getPrimaryStatistics = async ({ setData }) => {
         await csrf()
         
@@ -185,14 +195,17 @@ export const useUser = ({ middleware  } = {}) => {
             
     }
 
-    const getClassroomsWithGroups = async ({ setClassrooms, setUnits }) => {
+    const getClassroomsWithGroups = async ({ setClassrooms, setLoading, setUnits }) => {
+        setLoading(true)
         await csrf()
         
-        axios.get('/api/v1/groups/classrooms')
+        axios.get('/api/v1/groups_classrooms')
             .then(res => {
                 setClassrooms(res.data.classrooms)
                 setUnits(res.data.units)
             })
+
+        setLoading(false)
             
     }
 
@@ -218,7 +231,7 @@ export const useUser = ({ middleware  } = {}) => {
         setLoading(false)
     }
 
-    const addAcademy = async ({ setErrors, setLoading, ...props }) => {
+    const addAcademy = async ({ setErrors, setLoading, setAcademies, academies, setActive, setName, ...props }) => {
 
         setLoading(true)
 
@@ -228,7 +241,20 @@ export const useUser = ({ middleware  } = {}) => {
 
         axios
             .post('/api/v1/academies', props)
-            .then(() => toast('L\'annné academique a été rajoutée avec succés.'))
+            .then((res) => {
+                const date = new Date()
+                const newAcademy = {
+                    id: parseInt(academies.slice(-1)[0].id + 1),
+                    name: props.name,
+                    slug: props.name,
+                    created_at: date.getFullYear() + '-' + parseInt(date.getMonth() + 1 ) + '-' + date.getDate(),
+                    status: 1
+                }
+                setActive(true)
+                setAcademies([newAcademy].concat(academies))
+                setName('')
+                toast('L\'annné academique a été rajoutée avec succés.')
+            })
             .catch(error => {
                 setErrors(Object.values(error.response.data.errors).flat())
             })
@@ -236,7 +262,7 @@ export const useUser = ({ middleware  } = {}) => {
         setLoading(false)
     }
 
-    const updateAcademy = async ({ setActive, onClose, setWaiting, ...props }) => {
+    const updateAcademy = async ({ setActive, onClose, setWaiting, setLoading, academies, setAcademies, ...props }) => {
         
         setWaiting(true)
         await csrf()
@@ -245,6 +271,10 @@ export const useUser = ({ middleware  } = {}) => {
             .put('/api/v1/academies/'+props.academy_id)
             .then(() => {
                 setActive(false)
+                const index = academies.findIndex(item => item.id == props.academy_id)
+                const academiesCopy = [...academies]
+                academiesCopy[index] = {...academiesCopy[index], status: 0}
+                setAcademies(academiesCopy)
                 onClose()
             })
            
@@ -367,7 +397,7 @@ export const useUser = ({ middleware  } = {}) => {
          setPending(false) 
     }
 
-    const showCourse = async ({ slug, setShowModal, setUpdate, setGroups, setName, setSlug }) => {
+    const showCourse = async ({ slug, setShowModal, setUpdate, setGroups, setName, setSlug, setValue }) => {
         
         await csrf()
         
@@ -384,6 +414,10 @@ export const useUser = ({ middleware  } = {}) => {
             setGroups(myArray)
             setUpdate(true)
             setShowModal(true)
+            setValue({
+                value: res.data.unit.id,
+                label: res.data.unit.name
+            })
             
         })
             
@@ -401,7 +435,7 @@ export const useUser = ({ middleware  } = {}) => {
             .put('/api/v1/courses/'+props.slug, props)
             .then(() => {
                 getCourses({ setCourses, setPending })
-                toast('Matiere rajoutée avec succés.')
+                toast('Matiere modifiée avec succés.')
                 setOpen(false)
             })
             .catch(error => {
@@ -442,24 +476,27 @@ export const useUser = ({ middleware  } = {}) => {
 
         setErrors([])
 
-        props.responseType = 'blob'
-
         axios
             .post('/api/v1/extensions', props)
             .then((response) => {
-               
-                const url = window.URL.createObjectURL(new Blob([response.data]));
+            
+                const extension_id = response.data.id
+                console.log("geg", extension_id)
+                download({extension_id})
+               /*  const url = window.URL.createObjectURL(new Blob([response.data]));
                 const link = document.createElement('a');
                 link.href = url;
                 link.setAttribute('download', 'file.pdf'); //or any other extension
                 document.body.appendChild(link);
                 link.click();
-                console.log(link)
+                console.log(link) */
+
                 toast('Operation effectueé avec succés')
                 setValidUntilAt('')
                 setOpen(false)
             })
             .catch(error => {
+                //console.log('errer', error)
                 setErrors(Object.values(error.response.data.errors).flat())
             })
             
@@ -497,6 +534,59 @@ export const useUser = ({ middleware  } = {}) => {
         onClose()
     }
 
+    const download = async({extension_id}) => {
+        await csrf()
+        axios.get('/api/v1/extensions/download/'+extension_id, {
+            responseType: 'blob'
+        })
+        .then(response => {
+            const url = window.URL.createObjectURL(new Blob([response.data]));
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', 'file.pdf'); //or any other extension
+            document.body.appendChild(link);
+            link.click();
+        }) 
+    }
+
+    const signaturePad = async ({trimmedDataURL, setLoading, setShowModalSignature, setErrors}) => {
+        setLoading(true)
+        const formData = new FormData()
+        formData.append('signature_base64', trimmedDataURL)
+        const config = {
+            headers: {
+              'content-type': 'multipart/form-data',
+            },
+        }
+        axios.post('api/v1/signature_pad', formData, config)
+        .then((response) => {
+            setShowModalSignature(false)
+            toast('Opération effectueé avec succés')
+        })
+        .catch(error => {
+            console.log('error', error)
+            setErrors(Object.values(error.response.data.errors).flat())
+        })
+        setLoading(false)
+
+    }
+
+    const showGroup = async ({ setClassrooms, group_id, classrooms }) => {
+        await csrf()
+        axios.get('/api/v1/groups/'+group_id)
+         .then(res => {
+            setClassrooms(res.data)
+        })
+    }
+
+    const searschForFees = async ({ class_id, amount,setStudents, setLoading }) => {
+        await csrf()    
+        axios.get('/api/v1//'+group_id)
+         .then(res => {
+            setStudents(res.data)
+        })
+    }
+
    
 
     return {
@@ -526,6 +616,9 @@ export const useUser = ({ middleware  } = {}) => {
         addTransaction,
         addExtended,
         getStudentTransactionsAndExtensions,
-        deleteStudentAccount
+        deleteStudentAccount,
+        signaturePad,
+        showGroup,
+        getClasse
     }
 }

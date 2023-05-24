@@ -225,7 +225,7 @@ export default function ModalProfile({showModal, setShowModal })  {
                                                     <AiFillExclamationCircle size={35} color="red" />
                                                 </div>
 
-                                                <div className="flex flex-col w-3/4">
+                                                <div className="flex flex-col w-3/4 px-1 pb-3">
                                                     
                                                     <span className="mt-2">
                                                         As an account owner, deleting your user will result in the projects, inboxes, domains and data collected to no longer be accessible by anyone.  
@@ -243,7 +243,7 @@ export default function ModalProfile({showModal, setShowModal })  {
                                                         Further steps are necessary to reassure that this user belongs to you, as well as to inform you about the types of data which will be erased as part of the process.
                                                     </span>
 
-                                                    <Button className="bg-red-500 hover:bg-red-400 w-3/4 my-3">Supprimer mon compte</Button>
+                                                    <Button type="button" cancel={true} className="mt-2" >Supprimer mon compte</Button>
 
                                                     
                                                 </div>
