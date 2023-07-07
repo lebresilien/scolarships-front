@@ -7,9 +7,7 @@ const AppLayout = ({ header, children }) => {
     const { user } = useAuth({ middleware: 'auth' })
     const dispatch = useDispatch()
     dispatch(updateUser(user))
-    console.log(user)
-    //const user = useSelector((state) => state.userReducer.user)
-
+    
     return (
         <div className="min-h-screen bg-gray-100">
             <Navigation />

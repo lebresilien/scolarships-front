@@ -1,21 +1,17 @@
 import { Fragment, useState } from 'react'
 import AuthValidationErrors from '@/components/AuthValidationErrors'
 import { Dialog, Transition } from '@headlessui/react'
-import Select from 'react-select'
 import Button from './Button'
 import Label from './Label'
 import Input from './Input'
 import Textarea from './Textarea'
 import { useUser } from '@/hooks/user'
 
-const ModalClasse = ({open, setOpen, title, update, buildings, groups, groupValue, buildingValue, setClassrooms, updateName, updateDescription, setUpdateName, setUpdateDescription, setBuildingValue, setGroupValue, slug}) => {
+const ModalForm = ({open, setOpen, title, update, setBuildings, name, description, setName, update, setDescription, slug, load, setLoad, setPend}) => {
 
-    const [loading, setLoading] = useState(false)
     const [errors, setErrors] = useState([])
-    const [group_id, setGroup_id] = useState('')
-    const [building_id, setBuilding_id] = useState('')
 
-    const { addClassroom, updateClassroom } = useUser({
+    const { addBuilding, updateBuilding } = useUser({
         middleware: 'auth',
     })
 
@@ -23,38 +19,10 @@ const ModalClasse = ({open, setOpen, title, update, buildings, groups, groupValu
 
         e.preventDefault();
 
-        const name = updateName
-        const description = updateDescription
-
         {update ? 
-            updateClassroom({slug, name, description, building_id, group_id, setLoading, setErrors, groupValue, buildingValue, setClassrooms}) :
-            addClassroom({ name, description, building_id, group_id, setUpdateName, setUpdateDescription, setLoading, setErrors, groupValue, buildingValue, setClassrooms })
+            updateBuilding({slug, name, description, setLoad, setPend, setErrors, setOpen, setBuildings}) :
+            addBuilding({ name, description, setName, setDescription, setLoad, setPend, setErrors, setBuildings})
         }
-    }
-
-    let groupOptions = []
-    let buildingOptions = []
-
-    if(buildings.length != 0 ) {
-        buildings.map((unit) => {
-            buildingOptions.push({ value: unit.id, label: unit.name })
-        })
-    }
-
-    if(groups.length != 0 ) {
-        groups.map((unit) => {
-            groupOptions.push({ value: unit.id, label: unit.name })
-        })
-    }
-
-    const handleGroupChange = (newValue) => {
-        setGroup_id(newValue.value)
-        { update && setGroupValue({value: newValue.value, label: newValue.label}) }
-    }
-
-    const handleBuildingChange = (newValue) => {
-        setBuilding_id(newValue.value)
-        { update && setBuildingValue({value: newValue.value, label: newValue.label}) }
     }
 
     return (
@@ -111,37 +79,16 @@ const ModalClasse = ({open, setOpen, title, update, buildings, groups, groupValu
 
                                             <div className="mt-3 pt-3">
                                                 <div>
-                                                    <Label htmlFor="name">Libellé de la salle </Label>
+                                                    <Label htmlFor="name">Libellé </Label>
                                                     <Input
                                                         id="name"
                                                         type="text"
-                                                        value={updateName}
+                                                        value={name}
                                                         className="block mt-1 w-full bg-gray-50"
-                                                        onChange={(e) => setUpdateName(e.target.value)}
+                                                        onChange={(e) => setName(e.target.value)}
                                                         required
-                                                        autoFocus
-                                                        //readOnly={update ? true : false}  
+                                                        autoFocus 
                                                     />
-                                                </div>
-                                            </div>
-
-                                            <div className="mt-3 pt-3">
-                                                <div>
-                                                    <Label>Sélectionner le groupe</Label>
-                                                    {update ? 
-                                                        <Select options={groupOptions}  onChange={handleGroupChange} value={groupValue} />:
-                                                        <Select options={groupOptions}  onChange={handleGroupChange} />
-                                                    }
-                                                </div>
-                                            </div>
-
-                                            <div className="mt-3 pt-3">
-                                                <div>
-                                                    <Label>Sélectionner le batiment</Label>
-                                                    {update ?
-                                                        <Select options={buildingOptions}  onChange={handleBuildingChange} value={buildingValue} />:
-                                                        <Select options={buildingOptions}  onChange={handleBuildingChange} />
-                                                    }
                                                 </div>
                                             </div>
 
@@ -151,9 +98,9 @@ const ModalClasse = ({open, setOpen, title, update, buildings, groups, groupValu
 
                                                     <Textarea
                                                         id="description"
-                                                        value={updateDescription}
+                                                        value={description}
                                                         className="block mt-1 w-full"
-                                                        onChange={e => setUpdateDescription(e.target.value)}
+                                                        onChange={e => setDescription(e.target.value)}
                                                     />
                                                 </div>
                                             </div>
@@ -174,17 +121,17 @@ const ModalClasse = ({open, setOpen, title, update, buildings, groups, groupValu
                                                     <Button
                                                         type="submit"
                                                         className="" 
-                                                        disabled={loading}  
+                                                        disabled={load}  
                                                     >   
-                                                        { !loading ? 'Mettre à jour' : 'Mise à jour ...' }
+                                                        { !load ? 'Mettre à jour' : 'Mise à jour ...' }
                                                     </Button>
                                                 :
                                                     <Button
                                                         type="submit"
                                                         className="" 
-                                                        disabled={loading}  
+                                                        disabled={load}  
                                                     >   
-                                                        { !loading ? 'Enregistrez' : 'Enregistrement ...' }
+                                                        { !load ? 'Enregistrez' : 'Enregistrement ...' }
                                                     </Button>
                                                 }
                                             </div>
@@ -202,4 +149,4 @@ const ModalClasse = ({open, setOpen, title, update, buildings, groups, groupValu
     )
 }
 
-export default ModalClasse;
+export default ModalForm;

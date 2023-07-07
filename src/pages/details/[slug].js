@@ -43,9 +43,9 @@ const Details = () => {
     })
 
     useEffect(() => {
-        getStudentTransactionsAndExtensions({ setCurrentYearTransactions, setCurrentYearExtensions, setOtherYearTransactions, setOtherYearExtensions, slug, setPending, setLoading })
+        slug && getStudentTransactionsAndExtensions({ setCurrentYearTransactions, setCurrentYearExtensions, setOtherYearTransactions, setOtherYearExtensions, slug, setPending, setLoading })
         console.log("output", currentYearTransactions)
-    }, [])
+    }, [slug])
 
     const filteredCurrentYearTransactionsItems = currentYearTransactions.filter(
         item => item.name && item.name.toLowerCase().includes(filterText.toLowerCase()),
@@ -168,14 +168,14 @@ const Details = () => {
 
                                     <div className="grid grid-cols-1 gap-12">
 
-                                        <div className="flex md:flex-row flex-col items-center mt-8 py-8 border-b border-t border-gray-200">
+                                        <div className="flex flex-col items-center mt-8 py-8 border-b border-t border-gray-200">
 
-                                            <div className="flex flex-col md:w-1/4 w-full">
+                                            <div className="flex flex-col w-full">
                                                 <h3 className="font-bold text-xl leading-4 text-gray-900 leading-10">Liste des transactions</h3>
                                                 <span className="text-sm text-gray-400 tracking-wide leading-10">Transactions liées à l'anneé scolaire en cours</span>
                                             </div>
 
-                                            <div className="md:w-3/4 w-full flex-col">
+                                            <div className="w-full flex-col">
                                                 <div className="flex flex-col">
 
                                                     {currentYearTransactions.length != 0 ?
@@ -202,14 +202,14 @@ const Details = () => {
                                         </div>
 
 
-                                        <div className="flex md:flex-row flex-col items-center mt-8 py-8 border-b border-gray-200">
+                                        <div className="flex flex-col items-center mt-8 py-8 border-b border-gray-200">
 
-                                            <div className="flex flex-col md:w-1/4 w-full">
+                                            <div className="flex flex-col w-full">
                                                 <h3 className="font-bold text-xl leading-4 text-gray-900 leading-10">Liste des transactions</h3>
                                                 <span className="text-sm text-gray-400 tracking-wide leading-10">Transactions liées aux anneés scolaires anterieures</span>
                                             </div>
 
-                                            <div className="md:w-3/4 w-full flex-col">
+                                            <div className="w-full flex-col">
                                                 <div className="flex flex-col">
 
                                                     {otherYearTransactions.length != 0 ?
@@ -236,14 +236,14 @@ const Details = () => {
                                         </div>
 
 
-                                        <div className="flex md:flex-row flex-col items-center mt-8 border-b border-gray-200 py-8">
+                                        <div className="flex flex-col items-center mt-8 border-b border-gray-200 py-8">
 
-                                            <div className="flex flex-col md:w-1/4 w-full">
+                                            <div className="flex flex-col w-full">
                                                 <h3 className="font-bold text-xl leading-4 text-gray-900 leading-10">Liste des moratoires</h3>
                                                 <span className="text-sm text-gray-400 tracking-wide leading-10">Moratoires liés à l'anneé scolaire en cours</span>
                                             </div>
 
-                                            <div className="md:w-3/4 w-full flex-col">
+                                            <div className="w-full flex-col">
                                                 <div className="flex flex-col">
                                                 
                                                     {currentYearExtensions.length != 0 ?
@@ -269,14 +269,14 @@ const Details = () => {
                                             </div>
                                         </div>
 
-                                        <div className="flex md:flex-row flex-col items-center mt-8">
+                                        <div className="flex flex-col items-center mt-8">
 
-                                            <div className="flex flex-col md:w-1/4 w-full">
+                                            <div className="flex flex-col w-full">
                                                 <h3 className="font-bold text-xl leading-4 text-gray-900 leading-10">Liste des moratoires</h3>
                                                 <span className="text-sm text-gray-400 tracking-wide leading-10">Moratoires liés à l'anneé scolaire en cours</span>
                                             </div>
 
-                                            <div className="md:w-3/4 w-full flex-col">
+                                            <div className="w-full flex-col">
                                                 <div className="flex flex-col">
                                                 
                                                     {otherYearExtensions.length != 0 ?
@@ -302,13 +302,13 @@ const Details = () => {
                                             </div>
                                         </div>
 
-                                        <div className="flex md:flex-row flex-col items-center mt-8 border-t border-gray-200">
+                                        <div className="flex flex-col items-center mt-8 border-t border-gray-200">
 
-                                            <div className="flex flex-col md:w-1/4 w-full">
+                                            <div className="flex flex-col w-full">
                                                 <h3 className="font-bold text-xl leading-4 text-red-500 leading-10">Suppression compte</h3>
                                             </div>
 
-                                            <div className="md:w-3/4 w-full flex-col">
+                                            <div className="w-full flex-col">
                                                 <div className="flex flex-col">
                                                     <span className="text-sm text-gray-900 tracking-wide leading-10">La suppression d'un compte aura les consequences suivantes:</span>
                                                     <ul className="list-disc ml-12">
@@ -316,7 +316,7 @@ const Details = () => {
                                                         <li className="text-sm text-gray-900 tracking-wide leading-7">Cette suppression est irreversible</li>
                                                     </ul>
                                                     <Button 
-                                                        passed 
+                                                        cancel={1} 
                                                         className="items-center px-2 py-1 bg-red-500 border border-transparent rounded-md font-semibold text-medium text-white tracking-widest hover:bg-red-600 active:bg-red-600 focus:outline-none focus:border-red-600 focus:ring ring-red-300 disabled:opacity-25 transition ease-in-out duration-150 w-1/5 my-3"
                                                         onClick={ () => confirmOrNotDeleteAccount(slug) }
                                                     >

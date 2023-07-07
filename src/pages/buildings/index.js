@@ -3,12 +3,13 @@ import Head from 'next/head'
 import { useUser } from '@/hooks/user'
 import DataTable from 'react-data-table-component'
 import  FilterComponent  from '@/components/FilterComponent'
-import { useState, useEffect, useMemo } from "react"
-import { FaEdit } from 'react-icons/fa'
+import { useState, useEffect, useMemo, useRef } from "react"
 import TitleComponent from '@/components/TitleComponent'
-import ModalCourse from '@/components/ModalCourse'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
+import { FaEdit, FaInfoCircle } from 'react-icons/fa'
+import Link from 'next/link'
+import ModalBuilding from '@/components/ModalBuilding'
 
 const customStyles = {
    
@@ -20,39 +21,53 @@ const customStyles = {
    
 };
 
+const Building = () => {
 
-const Courses = () => {
-
-    const [courses, setCourses] = useState([])
-    const [units, setUnits] = useState([])
-    const [course, setCourse] = useState({})
-    const [groups, setGroups] = useState([])
-    const [classrooms, setClassrooms] = useState([])
-    const [showModal, setShowModal] = useState(false)
-    const [filterText, setFilterText] = useState('')
-    const [update, setUpdate] = useState(false)
+    const [buildings, setBuildings] = useState([])
     const [pending, setPending] = useState(true)
     const [loading, setLoading] = useState(false)
-    const [resetPaginationToggle, setResetPaginationToggle] = useState(false)
+    const [showModal, setShowModal] = useState(false)
     const [name, setName] = useState('')
-    const [slug, setSlug] = useState('')
-    const [value, setValue] = useState({})
-
-    const filteredItems = courses.filter(
+    const [description, setDescription] = useState('')
+    const [update, setUpdate] = useState(false)
+    const [filterText, setFilterText] = useState('')
+    const [resetPaginationToggle, setResetPaginationToggle] = useState(false)
+    const [id, setId] = useState('')
+    const ref = useRef(null);
+    
+    const filteredItems = buildings.filter(
 		item => item.name && item.name.toLowerCase().includes(filterText.toLowerCase()),
 	)
 
-    const { getClassroomsWithGroups, getCourses, showCourse } = useUser({
+    const { getBuilding } = useUser({
         middleware: 'auth'
     })
 
     useEffect(() => { 
 
-        getClassroomsWithGroups({ setClassrooms, setLoading, setUnits })
+        getBuilding({ setBuildings, setPending })
 
-        getCourses({ setCourses, setPending })
+        const handleClick = () => {
+           setUpdate(false)
+        };
+
+        const element = ref.current;
+
+        element.addEventListener('click', handleClick);
+
+        return () => {
+            element.removeEventListener('click', handleClick);
+        };
 
     },[])
+
+    const showModalUpdate = (slug, name, description) => {
+        setUpdate(true)
+        setShowModal(true)
+        setName(name)
+        setId(slug)
+        setDescription(description)
+    }
 
     const columns = [
         {
@@ -61,8 +76,8 @@ const Courses = () => {
             sortable: true,
         },
         {
-            name: 'Categorie',
-            selector: row => row.unit.name,
+            name: 'Description',
+            selector: row => row.description,
             sortable: true,
         },
         {
@@ -71,7 +86,11 @@ const Courses = () => {
         },
         {
             name: 'Operations',
-            selector: row => <div className="flex flex-row"><FaEdit className="cursor-pointer mr-2" size={25} onClick={() => showModalUpdate(row.slug)}/></div>
+            selector: row => 
+                <div className="flex flex-row">
+                    <FaEdit className="cursor-pointer mr-2" title="modifier" size={25} onClick={() => showModalUpdate(row.slug, row.name, row.description)}/>
+                    <Link href={"buildings/"+row.slug}><FaInfoCircle title="details" className="cursor-pointer mr-2" size={25} /></Link>
+                </div> 
         }
     ];
 
@@ -88,27 +107,22 @@ const Courses = () => {
         );
 	}, [filterText, resetPaginationToggle]);
 
-    const showModalUpdate = (slug) => {
-
-        showCourse({ setCourse, slug, setShowModal, setUpdate, setGroups, setName, setSlug, setValue })
-    }
-
     return (
 
         <AppLayout>
 
             <Head>
-                <title>Scolarships - Cours</title>
+                <title>Scolarships - Batiments</title>
             </Head>
 
-            <div className="py-12">
+            <div className="py-12" ref={ref}>
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
                     <div className="overflow-hidden shadow-sm sm:rounded-lg">
-                        <div className="py-6 border-b border-gray-200">
+                        <div className="p-6 border-b border-gray-200">
 
 
                             <DataTable
-                                title={<TitleComponent title="Matiéres" setShowModal={setShowModal} setUpdate={setUpdate} setName={setName} />}
+                                title={<TitleComponent title="Batiments" setShowModal={setShowModal} setUpdateName={setName} setUpdateDescription={setDescription} />}
                                 columns={columns}
                                 data={filteredItems}
                                 pagination
@@ -119,7 +133,6 @@ const Courses = () => {
                                 progressPending={pending}
                                 customStyles={customStyles}
                             />
-
                         </div>
                     </div>
                 </div>
@@ -127,30 +140,25 @@ const Courses = () => {
 
             <ToastContainer />
 
-            <ModalCourse 
+            <ModalBuilding
                 open={showModal} 
                 setOpen={setShowModal} 
-                title="Matière"
-                loading={loading}
-                setLoading={setLoading}
-                classrooms={classrooms}
-                setPending={setPending}
-                setCourses={setCourses}
+                title="Batiments"
+                load={loading}
+                setLoad={setLoading}
+                setPend={setPending}
                 update={update}
-                setUpdate={setUpdate}
-                setCourse={setCourse}
-                groups={groups}
-                setGroups={setGroups}
                 name={name}
                 setName={setName}
-                slug={slug}
-                units={units}
-                value={value}
-                setValue={setValue}
-            />
+                description={description}
+                setDescription={setDescription}
+                setBuildings={setBuildings}
+                slug={id}
+            /> 
 
         </AppLayout>
     )
+
 }
 
-export default Courses
+export default Building;

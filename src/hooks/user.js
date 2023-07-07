@@ -1,5 +1,5 @@
 import axios from '@/lib/axios'
-
+import useSWR from 'swr'
 import { toast } from 'react-toastify';
 
 export const useUser = ({ middleware  } = {}) => {
@@ -72,10 +72,10 @@ export const useUser = ({ middleware  } = {}) => {
             
     }
 
-    const addGroup = async ({ setErrors, setName, setDescription, setGroups, setLoading, ...props }) => {
+    const addGroup = async ({ setErrors, setName, setDescription, setFees, setGroups, setLoading, setPending, ...props }) => {
         setLoading(true)
         await csrf()
-
+        
         setErrors([])
 
         axios
@@ -84,7 +84,8 @@ export const useUser = ({ middleware  } = {}) => {
                 toast('Groupe rajouté avec succés.')
                 setName('')
                 setDescription('')
-                getGroup({ setGroups })
+                setFees('')
+                getGroup({ setGroups, setPending })
             })
             .catch(error => {
                 setErrors(Object.values(error.response.data.errors).flat())
@@ -92,7 +93,8 @@ export const useUser = ({ middleware  } = {}) => {
         setLoading(false)
     }
 
-    const getGroup = async ({ setGroups, setDefaultGroup }) => {
+    const getGroup = async ({ setGroups, setDefaultGroup, setPending }) => {
+        setPending && setPending(true) 
         await csrf()
       
         axios.get('/api/v1/groups')
@@ -101,7 +103,25 @@ export const useUser = ({ middleware  } = {}) => {
             setGroups(res.data.data)
             if(setDefaultGroup) setDefaultGroup(res.data.data[0].id)
          })
-            
+         setPending && setPending(false) 
+    }
+
+    const updateGroup = async({slug, setGroups, setErrors, setLoading, setOpen, setPending, ...props}) => {
+        setLoading(true)
+        await csrf()
+
+        setErrors([])
+        axios
+        .put('/api/v1/groups/'+slug, props)
+        .then(() => {
+            toast('Groupe modifiée avec succés.')
+            setOpen(false)
+            getGroup({ setGroups, setPending })
+        })
+        .catch(error => {
+            setErrors(Object.values(error.response.data.errors).flat())
+        })
+        setLoading(false)
     }
 
     const getAcademies = async ({ setAcademies, setPending }) => {
@@ -115,8 +135,8 @@ export const useUser = ({ middleware  } = {}) => {
         setPending(false)   
     }
 
-    const addBuilding = async ({ setErrors,setName, setDescription, setBuildings, setLoading, ...props }) => {
-        setLoading(true)
+    const addBuilding = async ({ setErrors,setName, setDescription, setBuildings, setLoad, ...props }) => {
+        setLoad(true)
         await csrf()
 
         setErrors([])
@@ -132,36 +152,134 @@ export const useUser = ({ middleware  } = {}) => {
             .catch(error => {
                 setErrors(Object.values(error.response.data.errors).flat())
             })
-        setLoading(false)
+        setLoad(false)
     }
 
-    const getBuilding = async ({ setBuildings, setDefaultBuilding }) => {
+    const getBuilding = async ({ setBuildings, setPending, setPend }) => {
+        setPend && setPend(true)
         await csrf()
         
         axios.get('/api/v1/buildings')
          .then(res => {
             setBuildings(res.data)
-            if(setDefaultBuilding) setDefaultBuilding(res.data[0].id)
-         })
-            
+        })
+         
+        setPending && setPending(false)
+        setPend && setPend(false)
     }
 
-    const addClassroom = async ({ setErrors, setName, setDescription, setLoading, ...props }) => {
+    const updateBuilding = async({slug, setBuildings, setErrors, setLoad, setPend, setOpen, ...props}) => {
+        setLoad(true)
+        await csrf()
+
+        setErrors([])
+        axios
+        .put('/api/v1/buildings/'+slug, props)
+        .then(() => {
+            toast('Batiment modifié avec succés.')
+            setOpen(false)
+            setPend(true)
+            getBuilding({ setBuildings, setPend })
+        })
+        .catch(error => {
+            setErrors(Object.values(error.response.data.errors).flat())
+        })
+        setLoad(false)
+    }
+
+    const showBuilding = async ({ slug, setLoaded, setData, setErrors }) => {
+       
+        await csrf()
+
+        axios.get('/api/v1/buildings/'+slug)
+         .then(res => {
+            setData(res.data.data)
+        })
+        .catch(error => {
+            setErrors(Object.values(error.response.data.errors).flat())
+        })
+        setLoaded(false)
+    }
+
+    const addClassroom = async ({ setErrors, setUpdateName, setUpdateDescription, setLoading, setClassrooms, ...props }) => {
         setLoading(true)
         await csrf()
 
         setErrors([])
 
         axios
-            .post('/api/v1/classrooms', props)
+            .post('/api/v1/classrooms',props)
             .then(() => {
                 toast('Classe rajoutée avec succés.')
-                setName('')
-                setDescription('')
+                setUpdateName('')
+                setUpdateDescription('')
+                getClasse({ setClassrooms })
             })
             .catch(error => {
                 setErrors(Object.values(error.response.data.errors).flat())
             })
+        setLoading(false)
+    }
+
+    const updateClassroom = async({slug, setClassrooms, setErrors, setLoading, setOpen, ...props}) => {
+        setLoading(true)
+        await csrf()
+
+        setErrors([])
+        axios
+        .put('/api/v1/classrooms/'+slug, props)
+        .then(() => {
+            toast('Classe modifiée avec succés.')
+            setOpen(false)
+            getClasse({ setClassrooms })
+        })
+        .catch(error => {
+            setErrors(Object.values(error.response.data.errors).flat())
+        })
+        setLoading(false)
+    }
+
+    const showClassroom = async ({ slug, setLoading, setClassroom, setErrors }) => {
+        setLoading(true)
+        await csrf()
+
+        axios.get('/api/v1/classrooms/'+slug)
+         .then(res => {
+            setClassroom(res.data.data)
+        })
+        .catch(error => {
+            setErrors(Object.values(error.response.data.errors).flat())
+        })
+        setLoading(false)
+    }
+
+    const showClassroomCourses = async ({ slug, setLoading, setCourses, setSequences, setErrors }) => {
+        setLoading(true)
+        await csrf()
+
+        axios.get('/api/v1/classrooms/'+slug+'/courses')
+        .then(res => {
+            console.log('console log', res.data)
+            setCourses(res.data.courses)
+            setSequences(res.data.sequences)
+        })
+        .catch(error => {
+            setErrors(Object.values(error.response.data.errors).flat())
+        })
+        setLoading(false)
+    }
+
+    const showClassroomStudents = async ({ slug, id, sequenceId, setLoading, setStudents, setErrors }) => {
+        setLoading(true)
+        await csrf()
+
+        axios.get('/api/v1/classrooms/'+slug+'/courses/'+id+'/sequences/'+sequenceId+'/students')
+        .then(res => {
+            setStudents(res.data.data)
+        })
+        .catch(error => {
+            setErrors(Object.values(error.response.data.errors).flat())
+        })
         setLoading(false)
     }
 
@@ -182,7 +300,7 @@ export const useUser = ({ middleware  } = {}) => {
         axios.get('/api/v1/classrooms')
          .then(res => {
             setClassrooms(res.data)
-            setPending(false)
+            setPending && setPending(false)
          })
             
     }
@@ -587,7 +705,76 @@ export const useUser = ({ middleware  } = {}) => {
         })
     }
 
-   
+    const getSequence = async ({ setSequences, setPending, setErrors }) => {
+        await csrf()
+      
+        axios.get('/api/v1/sequences')
+        .then(res => {
+            setSequences(res.data)
+        })
+        .catch(error => {
+            setErrors(Object.values(error.response.data.errors).flat())
+        })
+        
+        setPending(false)
+    }
+
+    const getSequenceSectionStats = async ({ slug, setStatistics, setPending }) => {
+        await csrf()
+        
+        axios.get('/api/v1/sequences/'+slug+'/sections')
+         .then(res => {
+            setStatistics(res.data)
+            setPending(true)
+         })   
+    }
+
+    const getSequenceGroupStats = async ({ slug, sectionId, setStatistics, setPending }) => {
+        await csrf()
+        
+        axios.get('/api/v1/sequences/'+slug+'/groups/'+sectionId)
+         .then(res => {
+            setStatistics(res.data)
+            setPending(true)
+         })   
+    }
+
+    const getSequenceClassroomStats = async ({ slug, classroomId, setStatistics, setPending }) => {
+        await csrf()
+        
+        axios.get('/api/v1/sequences/'+slug+'/classrooms/'+classroomId)
+         .then(res => {
+            setStatistics(res.data)
+            setPending(true)
+         })   
+    }
+
+    const addNote = async ({ setErrors, setPending, ...props }) => {
+
+        setPending(true)
+
+        await csrf()
+
+        setErrors([])
+
+        const data = {
+            students: props.students,
+            sequence_slug: props.sequenceId,
+            classroom_slug: props.slug,
+            course_slug: props.id
+        }
+
+        axios
+            .post('/api/v1/notes', data)
+            .then((res) => {
+                toast('Notes mises à jour avec succés.')
+            })
+            .catch(error => {
+                setErrors(Object.values(error.response.data.errors).flat())
+            })
+            
+        setPending(false)
+    }
 
     return {
         sendInvitation,
@@ -619,6 +806,18 @@ export const useUser = ({ middleware  } = {}) => {
         deleteStudentAccount,
         signaturePad,
         showGroup,
-        getClasse
+        getClasse,
+        updateClassroom,
+        showClassroom,
+        showClassroomCourses,
+        showClassroomStudents,
+        getSequence,
+        addNote,
+        getSequenceSectionStats,
+        getSequenceGroupStats,
+        getSequenceClassroomStats,
+        updateGroup,
+        updateBuilding,
+        showBuilding
     }
 }

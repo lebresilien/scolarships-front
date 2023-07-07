@@ -6,7 +6,8 @@ const initialState = {
         name: null,
         email: null,
         surname: null,
-        phone: null
+        phone: null,
+        rules: []
     }
 }
 

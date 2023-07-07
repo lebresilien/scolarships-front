@@ -1,7 +1,7 @@
 import AppLayout from '@/components/Layouts/AppLayout'
 import Head from 'next/head'
 import LoadingScreen from '@/components/LoadingScreen'
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect } from 'react'
 import Image from 'next/image'
 import Input from '@/components/Input'
 import Button from '@/components/Button'

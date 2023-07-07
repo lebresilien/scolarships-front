@@ -8,14 +8,12 @@ import Input from './Input'
 import Textarea from './Textarea'
 import { useUser } from '@/hooks/user'
 
-const ModalClasse = ({open, setOpen, title, update, buildings, groups, groupValue, buildingValue, setClassrooms, updateName, updateDescription, setUpdateName, setUpdateDescription, setBuildingValue, setGroupValue, slug}) => {
+const ModalForm = ({open, setOpen, title, update, sections, sectionValue, setGroups, name, description, fees, setName, setFees, update, setDescription, setSectionValue, slug, loading, setLoading, setPending, setGroups}) => {
 
-    const [loading, setLoading] = useState(false)
     const [errors, setErrors] = useState([])
-    const [group_id, setGroup_id] = useState('')
-    const [building_id, setBuilding_id] = useState('')
+    const [section_id, setSection_id] = useState('')
 
-    const { addClassroom, updateClassroom } = useUser({
+    const { addGroup, updateGroup } = useUser({
         middleware: 'auth',
     })
 
@@ -23,39 +21,25 @@ const ModalClasse = ({open, setOpen, title, update, buildings, groups, groupValu
 
         e.preventDefault();
 
-        const name = updateName
-        const description = updateDescription
-
         {update ? 
-            updateClassroom({slug, name, description, building_id, group_id, setLoading, setErrors, groupValue, buildingValue, setClassrooms}) :
-            addClassroom({ name, description, building_id, group_id, setUpdateName, setUpdateDescription, setLoading, setErrors, groupValue, buildingValue, setClassrooms })
+            updateGroup({slug, name, fees, description, section_id, setLoading, setPending, setErrors, sectionValue, setGroups, setOpen}) :
+            addGroup({ name, description, fees, section_id, setName, setDescription, setFees, setLoading, setPending, setErrors, sectionValue, setGroups })
         }
     }
 
-    let groupOptions = []
-    let buildingOptions = []
+    let sectionOptions = []
 
-    if(buildings.length != 0 ) {
-        buildings.map((unit) => {
-            buildingOptions.push({ value: unit.id, label: unit.name })
+    if(sections.length != 0 ) {
+        sections.map((unit) => {
+            sectionOptions.push({ value: unit.id, label: unit.name })
         })
     }
 
-    if(groups.length != 0 ) {
-        groups.map((unit) => {
-            groupOptions.push({ value: unit.id, label: unit.name })
-        })
+    const handleSectionChange = (newValue) => {
+        setSection_id(newValue.value)
+        { update && setSectionValue({value: newValue.value, label: newValue.label}) }
     }
 
-    const handleGroupChange = (newValue) => {
-        setGroup_id(newValue.value)
-        { update && setGroupValue({value: newValue.value, label: newValue.label}) }
-    }
-
-    const handleBuildingChange = (newValue) => {
-        setBuilding_id(newValue.value)
-        { update && setBuildingValue({value: newValue.value, label: newValue.label}) }
-    }
 
     return (
 
@@ -111,37 +95,42 @@ const ModalClasse = ({open, setOpen, title, update, buildings, groups, groupValu
 
                                             <div className="mt-3 pt-3">
                                                 <div>
-                                                    <Label htmlFor="name">Libellé de la salle </Label>
+                                                    <Label htmlFor="name">Libellé </Label>
                                                     <Input
                                                         id="name"
                                                         type="text"
-                                                        value={updateName}
+                                                        value={name}
                                                         className="block mt-1 w-full bg-gray-50"
-                                                        onChange={(e) => setUpdateName(e.target.value)}
+                                                        onChange={(e) => setName(e.target.value)}
                                                         required
-                                                        autoFocus
-                                                        //readOnly={update ? true : false}  
+                                                        autoFocus 
                                                     />
                                                 </div>
                                             </div>
 
                                             <div className="mt-3 pt-3">
                                                 <div>
-                                                    <Label>Sélectionner le groupe</Label>
+                                                    <Label>Sélectionner la section</Label>
                                                     {update ? 
-                                                        <Select options={groupOptions}  onChange={handleGroupChange} value={groupValue} />:
-                                                        <Select options={groupOptions}  onChange={handleGroupChange} />
+                                                        <Select options={sectionOptions}  onChange={handleSectionChange} value={sectionValue} />:
+                                                        <Select options={sectionOptions}  onChange={handleSectionChange} />
                                                     }
                                                 </div>
                                             </div>
 
-                                            <div className="mt-3 pt-3">
+                                            <div className="mt-2 pt-3">
                                                 <div>
-                                                    <Label>Sélectionner le batiment</Label>
-                                                    {update ?
-                                                        <Select options={buildingOptions}  onChange={handleBuildingChange} value={buildingValue} />:
-                                                        <Select options={buildingOptions}  onChange={handleBuildingChange} />
-                                                    }
+                                                    <Label htmlFor="fees">Montant scolarité </Label>
+
+                                                    <Input
+                                                        id="fees"
+                                                        type="number"
+                                                        value={fees}
+                                                        className="block mt-1 w-full"
+                                                        onChange={event => setFees(event.target.value)}
+                                                        required
+                                                        autoFocus
+                                                    />
                                                 </div>
                                             </div>
 
@@ -151,9 +140,9 @@ const ModalClasse = ({open, setOpen, title, update, buildings, groups, groupValu
 
                                                     <Textarea
                                                         id="description"
-                                                        value={updateDescription}
+                                                        value={description}
                                                         className="block mt-1 w-full"
-                                                        onChange={e => setUpdateDescription(e.target.value)}
+                                                        onChange={e => setDescription(e.target.value)}
                                                     />
                                                 </div>
                                             </div>
@@ -202,4 +191,4 @@ const ModalClasse = ({open, setOpen, title, update, buildings, groups, groupValu
     )
 }
 
-export default ModalClasse;
+export default ModalForm;

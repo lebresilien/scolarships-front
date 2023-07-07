@@ -8,6 +8,7 @@ import 'react-toastify/dist/ReactToastify.css'
 import { useUser } from '@/hooks/user'
 import PrimaryStatistic from '@/components/PrimaryStatistic'
 import ContentLoader, { Facebook } from 'react-content-loader'
+import { useSelector } from 'react-redux'
 
 const Dashboard = (props) => {
 
@@ -35,10 +36,7 @@ const Dashboard = (props) => {
         middleware: 'auth',
     })
 
-    const addClassroom = (e) => {
-        e.preventDefault()
-        alert(name)
-    }
+    const user = useSelector((state) => state.userReducer.user)
 
     useEffect(() => {
         getSection({ setSections, setDefaultSection })
@@ -58,18 +56,20 @@ const Dashboard = (props) => {
                                 Dashboard
                             </h2>
                         </div>
-                        <div className="flex flex-row justify-between">
-                            <h2 
-                                className="border-eee px-4 py-1 mr-2 font-semibold text-xl text-gray-600 leading-tight rounded-sm cursor-pointer"
-                                onClick={() => setShowModalForm(true)}>
-                                + contenu
-                            </h2>
-                            <h2 
-                                className="bg-blue-400 hover:bg-blue-500 px-4 py-1 font-semibold text-xl text-white leading-tight rounded-sm cursor-pointer"
-                                onClick={OnModalUser}>
-                                + ajouter
-                            </h2>
-                        </div>
+                        
+                            <div className="flex flex-row justify-between">
+                                <h2 
+                                    className="border-eee px-4 py-1 mr-2 font-semibold text-xl text-gray-600 leading-tight rounded-sm cursor-pointer"
+                                    onClick={() => setShowModalForm(true)}>
+                                    + contenu
+                                </h2>
+                                <h2 
+                                    className="bg-blue-400 hover:bg-blue-500 px-4 py-1 font-semibold text-xl text-white leading-tight rounded-sm cursor-pointer"
+                                    onClick={OnModalUser}>
+                                    + ajouter
+                                </h2>
+                            </div>
+                        
                     </div>
                 }>
 
@@ -81,6 +81,7 @@ const Dashboard = (props) => {
                     <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
                         <div className="overflow-hidden shadow-sm sm:rounded-lg">
                             <div className="py-6 border-b border-gray-200">
+                                {user?.name == "Doe" && ((
                                 <div className="grid sm:grid-cols-4 sm:gap-4 grid-cols-2 gap-6 my-1">
                                     {!loading ?
                                         data.map((item, index) => (
@@ -145,7 +146,7 @@ const Dashboard = (props) => {
                                     }
                                 
                                 </div>
-
+                            ))}
                             </div>
                         </div>
                     </div>
@@ -157,7 +158,7 @@ const Dashboard = (props) => {
                     text={text} 
                     notify={toast}
                 />
-                <ModalForm 
+               {/*  <ModalForm 
                     open={showModalForm} 
                     setOpen={setShowModalForm} 
                     notify={toast} 
@@ -170,7 +171,7 @@ const Dashboard = (props) => {
                     defaultSection={defaultSection}
                     defaultGroup={defaultGroup}
                     defaultBuilding={defaultBuilding}
-                />
+                /> */}
             </AppLayout>
     )
 } 

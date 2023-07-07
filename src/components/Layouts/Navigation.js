@@ -22,7 +22,7 @@ const Navigation = () => {
     const[showModalSignature, setShowModalSignature] = useState(false)
 
     const user = useSelector((state) => state.userReducer.user)
-
+    
     return (
         <nav className="bg-white border-b border-gray-100">
             {/* Primary Navigation Menu */}
@@ -72,9 +72,27 @@ const Navigation = () => {
                             </NavLink>
 
                             <NavLink
-                                href="/classroom"
-                                active={router.pathname == '/classroom'}>
-                                salles
+                                href="/groups"
+                                active={router.pathname == '/groups'}>
+                                Groupes
+                            </NavLink>
+
+                            <NavLink
+                                href="/buildings"
+                                active={router.pathname == '/buildings'}>
+                                Batiments
+                            </NavLink>
+
+                            <NavLink
+                                href="/classrooms"
+                                active={router.pathname == '/classrooms'}>
+                                Salles
+                            </NavLink>
+
+                            <NavLink
+                                href="/sequences"
+                                active={router.pathname == '/sequences'}>
+                                Sequences
                             </NavLink>
                         </div>
                     </div>
@@ -162,6 +180,42 @@ const Navigation = () => {
                             href="/dashboard"
                             active={router.pathname == '/dashboard'}>
                             Dashboard
+                        </ResponsiveNavLink>
+                        
+                        <ResponsiveNavLink
+                            href="/inscription"
+                            active={router.pathname == '/inscription'}>
+                            Inscription
+                        </ResponsiveNavLink>
+
+                        <ResponsiveNavLink
+                            href="/courses"
+                            active={router.pathname == '/courses'}>
+                            Matiéres
+                        </ResponsiveNavLink>
+
+                        <ResponsiveNavLink
+                            href="/groups"
+                            active={router.pathname == '/groups'}>
+                            Groupes
+                        </ResponsiveNavLink>
+
+                        <ResponsiveNavLink
+                            href="/buildings"
+                            active={router.pathname == '/buildings'}>
+                            Batiments
+                        </ResponsiveNavLink>
+
+                        <ResponsiveNavLink
+                            href="/classrooms"
+                            active={router.pathname == '/classrooms'}>
+                            Salles
+                        </ResponsiveNavLink>
+
+                        <ResponsiveNavLink
+                            href="/sequences"
+                            active={router.pathname == '/sequences'}>
+                            Salles
                         </ResponsiveNavLink>
                     </div>
 
