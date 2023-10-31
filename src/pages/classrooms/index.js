@@ -3,14 +3,16 @@ import Head from 'next/head'
 import { useUser } from '@/hooks/user'
 import DataTable from 'react-data-table-component'
 import  FilterComponent  from '@/components/FilterComponent'
-import { useState, useEffect, useMemo, useRef } from "react"
+import { useState, useEffect, useMemo, useRef, useCallback } from "react"
 import { FaEdit, FaInfoCircle } from 'react-icons/fa'
 import { VscNote } from 'react-icons/vsc'
 import TitleComponent from '@/components/TitleComponent'
-import ModalClasse from '@/components/ModalClasse'
+import ModalSection from '@/components/ModalSection'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import Link from 'next/link'
+import Button from '@/components/Button'
+import AuthValidationErrors from '@/components/AuthValidationErrors'
 
 const customStyles = {
    
@@ -22,38 +24,48 @@ const customStyles = {
    
 };
 
+const type = "classrooms";
+
 const Classroom = () => {
 
-    const [classroms, setClassrooms] = useState([])
-    const [buildings, setBuildings] = useState([])
-    const [groups, setGroups] = useState([])
+    const [state, setState] = useState([])
+    const [additionals, setAdditionals] = useState([])
+    const [others, setOthers] = useState([])
     const [pending, setPending] = useState(true)
     const [loading, setLoading] = useState(false)
     const [showModal, setShowModal] = useState(false)
     const [update, setUpdate] = useState(false)
+    const [name, setName] = useState('')
+    const [description, setDescription] = useState('')
     const [filterText, setFilterText] = useState('')
     const [resetPaginationToggle, setResetPaginationToggle] = useState(false)
-    const [groupValue, setGroupValue] = useState({value: '', label: ''})
+   /*  const [groupValue, setGroupValue] = useState({value: '', label: ''})
     const [buildingValue, setBuildingValue] = useState({value: '', label: ''})
     const [updateName, setUpdateName] = useState('')
-    const [updateDescription, setUpdateDescription] = useState('')
+    const [updateDescription, setUpdateDescription] = useState('') */
     const [id, setId] = useState('')
+    const [selectedRows, setSelectedRows] = useState(false)
+    const [group_id, setGroup_id] = useState('')
+    const [building_id, setBuilding_id] = useState('')
+    const [selectedGroup, setSelectedGroup] = useState({})
+    const [selectedOther, setSelectedOther] = useState({})
+    const [toggleCleared, setToggleCleared] = useState(false)
+    const [waiting, setWaiting] = useState(false)
+    const [errors, setErrors] = useState([])
 
     const ref = useRef(null);
     
-    const filteredItems = classroms.filter(
+    const filteredItems = state.filter(
 		item => item.name && item.name.toLowerCase().includes(filterText.toLowerCase()),
 	)
 
-    const { getClasse, getBuilding, getGroup } = useUser({
+    const { list, add, remove, updateClassroom } = useUser({
         middleware: 'auth'
     })
 
     useEffect(() => { 
 
-        getClasse({ setClassrooms, setPending })
-        getBuilding({ setBuildings })
-        getGroup({ setGroups })
+        list({ setState, setPending, setAdditionals, type, setOthers })
 
         const handleClick = () => {
            setUpdate(false)
@@ -69,16 +81,21 @@ const Classroom = () => {
 
     },[])
 
-    const showModalUpdate = (slug, building_id, group_id, name, description) => {
+    const showModalUpdate = (id, building, group, name, description) => {
         setUpdate(true)
         setShowModal(true)
-        setUpdateName(name)
-        setId(slug)
-        setUpdateDescription(description)
-        const findGroup = groups.find(item => item.id == group_id)
+        setName(name)
+        setId(id)
+        setDescription(description)
+        setSelectedGroup(group)
+        setGroup_id(group.value)
+        setBuilding_id(building.value)
+        setSelectedOther(building)
+        //setErrors([])
+        /* const findGroup = groups.find(item => item.id == group_id)
         setGroupValue({ value: findGroup.id, label: findGroup.name })
         const findBuilding = buildings.find(item => item.id == building_id)
-        setBuildingValue({ value: findBuilding.id, label: findBuilding.name })
+        setBuildingValue({ value: findBuilding.id, label: findBuilding.name }) */
     }
 
     const columns = [
@@ -89,12 +106,12 @@ const Classroom = () => {
         },
         {
             name: 'Groupe',
-            selector: row => row.group_name,
+            selector: row => row.group.label,
             sortable: true,
         },
         {
             name: 'Batiment',
-            selector: row => row.building_name,
+            selector: row => row.building.label,
             sortable: true,
         },
         {
@@ -110,7 +127,7 @@ const Classroom = () => {
             name: 'Operations',
             selector: row => 
                 <div className="flex flex-row">
-                    <FaEdit className="cursor-pointer mr-2" title="modifier" size={25} onClick={() => showModalUpdate(row.id, row.building_id, row.group_id, row.name, row.description)}/>
+                    <FaEdit className="cursor-pointer mr-2" title="modifier" size={25} onClick={() => showModalUpdate(row.id, row.building, row.group, row.name, row.description)}/>
                     <Link href={"classrooms/"+row.slug+"/courses"}><VscNote title="notes" className="cursor-pointer mr-2" size={25} /></Link>
                     <Link href={"classrooms/"+row.slug}><FaInfoCircle title="details" className="cursor-pointer mr-2" size={25} /></Link>
                 </div>
@@ -130,6 +147,31 @@ const Classroom = () => {
         );
 	}, [filterText, resetPaginationToggle]);
 
+    const handleRowSelected = useCallback(state => {
+		setSelectedRows(state.selectedRows);
+	}, []);
+
+    const contextActions = useMemo(() => {
+		const handleDelete = () => {
+			
+			if (window.confirm(`Are you sure you want to deleted:\r ${selectedRows.map(r => r.title)}?`)) {
+				setToggleCleared(!toggleCleared);
+                let ids = "";
+                selectedRows.forEach((item, index) => {
+                    if(index == (selectedRows.length - 1)) ids += item.id
+                    else ids += item.id + ';'
+                })
+                remove({ setErrors, setWaiting, ids, state, setState, type })
+			}
+		};
+
+		return (
+			<Button disabled={waiting} key="delete" onClick={handleDelete} style={{ backgroundColor: 'red' }}>
+				{ waiting ? 'Suppression...' : 'Supprimer' }
+			</Button>
+		);
+	}, [state, selectedRows, toggleCleared]);
+
     return (
 
         <AppLayout>
@@ -144,7 +186,7 @@ const Classroom = () => {
                         <div className="p-6 border-b border-gray-200">
 
                             <DataTable
-                                title={<TitleComponent title="Classes" setShowModal={setShowModal} setUpdateName={setUpdateName} setUpdateDescription={setUpdateDescription}/>}
+                                title={<TitleComponent title="Classes" setShowModal={setShowModal} setUpdateName={setName} setUpdateDescription={setDescription}/>}
                                 columns={columns}
                                 data={filteredItems}
                                 pagination
@@ -154,6 +196,11 @@ const Classroom = () => {
                                 persistTableHead
                                 progressPending={pending}
                                 customStyles={customStyles}
+                                selectableRows
+                                contextActions={contextActions}
+                                selectedRows={selectedRows}
+                                clearSelectedRows={toggleCleared}
+                                onSelectedRowsChange={handleRowSelected}
                             />
 
                         </div>
@@ -163,26 +210,34 @@ const Classroom = () => {
 
             <ToastContainer />
 
-            <ModalClasse 
+            <ModalSection 
                 open={showModal} 
                 setOpen={setShowModal} 
                 title="Salle de classe"
                 loading={loading}
                 setLoading={setLoading}
-                buildings={buildings}
-                groups={groups}
+                state={state}
                 setPending={setPending}
                 update={update}
-                groupValue={groupValue}
-                setGroupValue={setGroupValue}
-                buildingValue={buildingValue}
-                setBuildingValue={setBuildingValue}
-                setClassrooms={setClassrooms}
-                updateName={updateName}
-                setUpdateName={setUpdateName}
-                updateDescription={updateDescription}
-                setUpdateDescription={setUpdateDescription}
-                slug={id}
+                setState={setState}
+                name={name}
+                setName={setName}
+                description={description}
+                setDescription={setDescription}
+                id={id}
+                save={add}
+                edit={updateClassroom}
+                additional={additionals}
+                other={others}
+                group_id={group_id}
+                building_id={building_id}
+                setGroup_id={setGroup_id}
+                setBuilding_id={setBuilding_id}
+                selectedGroup={selectedGroup}
+                selectedOther={selectedOther}
+                setSelectedGroup={setSelectedGroup}
+                setSelectedOther={setSelectedOther}
+                type={type}
             />
 
         </AppLayout>

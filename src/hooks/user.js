@@ -11,7 +11,7 @@ export const useUser = ({ middleware  } = {}) => {
         await csrf()
 
         setErrors([])
-console.log('props sata :::://////..', props);
+
         axios
             .post('/api/v1/invitation', props)
             .then(() => {
@@ -66,40 +66,6 @@ console.log('props sata :::://////..', props);
         setLoading(false)
     }
 
-    const addGroup = async ({ setErrors, setName, setDescription, setFees, setGroups, setLoading, setPending, ...props }) => {
-        setLoading(true)
-        await csrf()
-        
-        setErrors([])
-
-        axios
-            .post('/api/v1/groups', props)
-            .then(() => {
-                toast('Groupe rajouté avec succés.')
-                setName('')
-                setDescription('')
-                setFees('')
-                getGroup({ setGroups, setPending })
-            })
-            .catch(error => {
-                setErrors(Object.values(error.response.data.errors).flat())
-            })
-        setLoading(false)
-    }
-
-    const getGroup = async ({ setGroups, setDefaultGroup, setPending }) => {
-        setPending && setPending(true) 
-        await csrf()
-      
-        axios.get('/api/v1/groups')
-         .then(res => {
-          
-            setGroups(res.data.data)
-            if(setDefaultGroup) setDefaultGroup(res.data.data[0].id)
-         })
-         setPending && setPending(false) 
-    }
-
     const updateGroup = async({additional, id, setState, state, setErrors, setLoading, setOpen, setPending, ...props}) => {
         setLoading(true)
         await csrf()
@@ -129,39 +95,7 @@ console.log('props sata :::://////..', props);
         setLoading(false)
     }
 
-    const addBuilding = async ({ setErrors,setName, setDescription, setBuildings, setLoad, ...props }) => {
-        setLoad(true)
-        await csrf()
-
-        setErrors([])
-
-        axios
-            .post('/api/v1/buildings', props)
-            .then(() => {
-                toast('Batiment rajouté avec succés.')
-                setName('')
-                setDescription('')
-                getBuilding({ setBuildings })
-            })
-            .catch(error => {
-                setErrors(Object.values(error.response.data.errors).flat())
-            })
-        setLoad(false)
-    }
-
-    const getBuilding = async ({ setBuildings, setPending, setPend }) => {
-        setPend && setPend(true)
-        await csrf()
-        
-        axios.get('/api/v1/buildings')
-         .then(res => {
-            setBuildings(res.data)
-        })
-         
-        setPending && setPending(false)
-        setPend && setPend(false)
-    }
-
+    
     const updateBuilding = async({id, additional, setState, setErrors, state, setLoading, setOpen, ...props}) => {
         setLoading(true)
         await csrf()
@@ -204,37 +138,29 @@ console.log('props sata :::://////..', props);
         setLoaded(false)
     }
 
-    const addClassroom = async ({ setErrors, setUpdateName, setUpdateDescription, setLoading, setClassrooms, ...props }) => {
-        setLoading(true)
-        await csrf()
-
-        setErrors([])
-
-        axios
-            .post('/api/v1/classrooms',props)
-            .then(() => {
-                toast('Classe rajoutée avec succés.')
-                setUpdateName('')
-                setUpdateDescription('')
-                getClasse({ setClassrooms })
-            })
-            .catch(error => {
-                setErrors(Object.values(error.response.data.errors).flat())
-            })
-        setLoading(false)
-    }
-
-    const updateClassroom = async({slug, setClassrooms, setErrors, setLoading, setOpen, ...props}) => {
+    const updateClassroom = async({other, additional, id, setState, state, setErrors, setLoading, setOpen, setPending, ...props}) => {
         setLoading(true)
         await csrf()
 
         setErrors([])
         axios
-        .put('/api/v1/classrooms/'+slug, props)
+        .put('/api/v1/classrooms/'+id, props)
         .then(() => {
             toast('Classe modifiée avec succés.')
+
+            const item = additional.find(group => group.value == props.group_id)
+            const search = other.find(el => el.value == props.building_id)
+            const copySection = [...state]
+
+            const currentItem = copySection.find(item => item.id === id)
+         
+            currentItem.name = props.name
+            currentItem.description = props.description
+            currentItem.group = item
+            currentItem.building = search
+ 
+            setState(copySection)
             setOpen(false)
-            getClasse({ setClassrooms })
         })
         .catch(error => {
             setErrors(Object.values(error.response.data.errors).flat())
@@ -286,17 +212,6 @@ console.log('props sata :::://////..', props);
         setLoading(false)
     }
 
-    const getClassroom = async ({ setClassrooms, setClassroomValue }) => {
-        await csrf()
-        
-        axios.get('/api/v1/classrooms')
-         .then(res => {
-            setClassrooms(res.data)
-            if(setClassroomValue) setClassroomValue(res.data[0].id)
-         })
-            
-    }
-
     const getClasse = async ({ setClassrooms, setPending }) => {
         await csrf()
         
@@ -329,28 +244,6 @@ console.log('props sata :::://////..', props);
         setLoading(false)
             
     }
-
-   /*  const addCourse = async ({ setErrors, setLoading, setCourses, setPending, ...props }) => {
-
-        setLoading(true)
-
-        await csrf()
-
-        setErrors([])
-
-        axios
-            .post('/api/v1/courses', props)
-            .then((res) => {
-                getCourses({ setCourses, setPending })
-                toast('Matiere rajoutée avec succés.')
-                //console.log(res)
-            })
-            .catch(error => {
-                setErrors(Object.values(error.response.data.errors).flat())
-            })
-            
-        setLoading(false)
-    } */
 
     const addAcademy = async ({ setErrors, setLoading, setState, state, setActive, setName, ...props }) => {
 
@@ -534,7 +427,7 @@ console.log('props sata :::://////..', props);
         setPending(false)
     }
 
-    const list = async ({ setState, setPending, type, setAdditionals }) => {
+    const list = async ({ setState, setPending, type, setAdditionals, setOthers }) => {
         
         await csrf()
         setPending(true)
@@ -544,9 +437,21 @@ console.log('props sata :::://////..', props);
             const data = res.data
             setState(data.state)
             setAdditionals && setAdditionals(data.additional)
+            setOthers && setOthers(data.other)
         })
          
         setPending(false) 
+    }
+
+    const getClassroom = async ({ setClassrooms, setClassroomValue }) => {
+        await csrf()
+        
+        axios.get('/api/v1/classrooms')
+         .then(res => {
+            setClassrooms(res.data)
+            if(setClassroomValue) setClassroomValue(res.data[0].id)
+         })
+            
     }
 
     const showCourse = async ({ slug, setShowModal, setUpdate, setGroups, setName, setSlug, setValue }) => {
@@ -820,10 +725,9 @@ console.log('props sata :::://////..', props);
         setPending(false)
     }
 
-    const add = async ({ additional, setErrors, setName, setDescription, setCoeff, setLoading, setState, state, type, ...props }) => {
+    const add = async ({ additional, setErrors, setName, setDescription, setCoeff, setLoading, setState, state, type, other, ...props }) => {
         setLoading(true)
         await csrf()
-
         setErrors([])
 
         axios
@@ -865,6 +769,23 @@ console.log('props sata :::://////..', props);
                             description: props.description,
                             created_at: d.getFullYear() + '-' + parseInt(d.getMonth() + 1) + '-'+ d.getDate()
                         }
+                        setState([
+                            newItem,
+                            ...state
+                        ])
+                    } else if(type === "classrooms") {
+
+                        const item = additional.find(group => group.value == props.group_id)
+                        const search = other.find(el => el.value == props.building_id)
+
+                        const newItem = {
+                            name: props.name,
+                            group: item,
+                            building: search,
+                            description: props.description,
+                            created_at: d.getFullYear() + '-' + parseInt(d.getMonth() + 1) + '-'+ d.getDate()
+                        }
+
                         setState([
                             newItem,
                             ...state
@@ -935,12 +856,6 @@ console.log('props sata :::://////..', props);
     return {
         sendInvitation,
         updateProfile,
-        addGroup,
-        getGroup,
-        addBuilding,
-        getBuilding,
-        addClassroom,
-        getClassroom,
         getPrimaryStatistics,
         getClassroomsWithGroups,
         addAcademy,
@@ -974,6 +889,7 @@ console.log('props sata :::://////..', props);
         updateSection,
         add,
         updateUnit,
-        remove
+        remove,
+        getClassroom
     }
 }

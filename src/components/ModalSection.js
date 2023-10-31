@@ -7,17 +7,18 @@ import Input from './Input'
 import Textarea from './Textarea'
 import Select from 'react-select'
 
-const ModalSection = ({type, setSelectedGroup, setGroup_id, group_id, open, setOpen, title, update, state, setState, name, description, setName, setDescription, id, loading, setLoading, setPending, save, edit, additional, selectedGroup, coeff, setCoeff, setUnit_id, unit_id, fees, setFees, section_id, setSection_id}) => {
+const ModalSection = ({type, setSelectedGroup, setGroup_id, group_id, open, setOpen, title, update, state, setState, name, description, setName, setDescription, id, loading, setLoading, setPending, save, edit, additional, selectedGroup, coeff, setCoeff, setUnit_id, unit_id, fees, setFees, section_id, setSection_id, other, selectedOther,building_id, setBuilding_id, setSelectedOther }) => {
 
     const [errors, setErrors] = useState([])
 
     const submitForm = (e) => {
 
         e.preventDefault();
+        console.log('see', id)
 
         {update ? 
-            edit({id, name, fees, description, setLoading, setPending, setErrors, setState, setOpen, state, group_id, additional, setUnit_id, coeff, setCoeff, unit_id, setSection_id, section_id}) :
-            save({ fees, setFees, name, description, setName, setDescription, setLoading, setPending, setErrors, setState, state, group_id, additional, type, coeff, setCoeff, setUnit_id, unit_id, setSection_id, section_id })
+            edit({id, name, fees, description, setLoading, setPending, setErrors, setState, setOpen, state, group_id, additional, setUnit_id, coeff, setCoeff, unit_id, setSection_id, section_id, building_id, setBuilding_id, other}) :
+            save({ fees, setFees, name, description, setName, setDescription, setLoading, setPending, setErrors, setState, state, group_id, additional, type, coeff, setCoeff, setUnit_id, unit_id, setSection_id, section_id, building_id, setBuilding_id, other })
         }
     }
 
@@ -25,7 +26,14 @@ const ModalSection = ({type, setSelectedGroup, setGroup_id, group_id, open, setO
         if(type === "units") setGroup_id(newValue.value) 
         else if(type === "courses") setUnit_id(newValue.value)
         else if(type === "groups") setSection_id(newValue.value)
+        else if(type === "classrooms") setGroup_id(newValue.value)
+        else setSection_id('')
         update && setSelectedGroup(newValue)
+    }
+
+    const handleChangeOther = (newValue) => {
+        setBuilding_id(newValue.value)
+        update && setSelectedOther(newValue)
     }
 
 
@@ -103,6 +111,18 @@ const ModalSection = ({type, setSelectedGroup, setGroup_id, group_id, open, setO
                                                         {update ?
                                                             <Select options={additional}  onChange={handleChange} value={selectedGroup} />:
                                                             <Select options={additional}  onChange={handleChange} />
+                                                        }
+                                                    </div>
+                                                </div>
+                                            ))}
+
+                                            {other && ((
+                                                <div className="mt-2 pt-3">
+                                                    <Label htmlFor="description">Selectioner le groupe </Label>
+                                                    <div>
+                                                        {update ?
+                                                            <Select options={other}  onChange={handleChangeOther} value={selectedOther} />:
+                                                            <Select options={other}  onChange={handleChangeOther} />
                                                         }
                                                     </div>
                                                 </div>
