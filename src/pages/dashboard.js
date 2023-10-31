@@ -1,6 +1,5 @@
 import AppLayout from '@/components/Layouts/AppLayout'
 import Head from 'next/head'
-import ModalForm from '@/components/ModalForm'
 import Modal from '@/components/Modal'
 import { useEffect, useState } from 'react'
 import { ToastContainer, toast } from 'react-toastify'
@@ -39,11 +38,11 @@ const Dashboard = (props) => {
     const user = useSelector((state) => state.userReducer.user)
 
     useEffect(() => {
-        getSection({ setSections, setDefaultSection })
-        getBuilding({ setBuildings, setDefaultBuilding })
-        getGroup({ setGroups, setDefaultGroup })
+        //getSection({ setSections, setDefaultSection })
+        //getBuilding({ setBuildings, setDefaultBuilding })
+        //getGroup({ setGroups, setDefaultGroup })
         getPrimaryStatistics({ setData })
-        getClassroomsWithGroups({ setClassrooms, setLoading, setUnits })
+        //getClassroomsWithGroups({ setClassrooms, setLoading, setUnits })
     }, [])
 
     return (
@@ -74,14 +73,14 @@ const Dashboard = (props) => {
                 }>
 
                 <Head>
-                    <title>Laravel - Dashboard</title>
+                    <title>Scolarships - Dashboard</title>
                 </Head>
 
                 <div className="py-12">
                     <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
                         <div className="overflow-hidden shadow-sm sm:rounded-lg">
                             <div className="py-6 border-b border-gray-200">
-                                {user?.name == "Doe" && ((
+                                {/* {user?.name == "Doe" && (( */}
                                 <div className="grid sm:grid-cols-4 sm:gap-4 grid-cols-2 gap-6 my-1">
                                     {!loading ?
                                         data.map((item, index) => (
@@ -146,7 +145,7 @@ const Dashboard = (props) => {
                                     }
                                 
                                 </div>
-                            ))}
+                           {/*  ))} */}
                             </div>
                         </div>
                     </div>
@@ -158,20 +157,7 @@ const Dashboard = (props) => {
                     text={text} 
                     notify={toast}
                 />
-               {/*  <ModalForm 
-                    open={showModalForm} 
-                    setOpen={setShowModalForm} 
-                    notify={toast} 
-                    sections={sections} 
-                    setSections={setSections}
-                    groups={groups}
-                    setGroups={setGroups}
-                    buildings={buildings}
-                    setBuildings={setBuildings}
-                    defaultSection={defaultSection}
-                    defaultGroup={defaultGroup}
-                    defaultBuilding={defaultBuilding}
-                /> */}
+               
             </AppLayout>
     )
 } 

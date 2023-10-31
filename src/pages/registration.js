@@ -17,6 +17,7 @@ const Registration = () => {
     })
 
     const [name, setName] = useState('')
+	const [phone, setPhone] = useState('')
     const [surname, setSurname] = useState('')
     const [password, setPassword] = useState('')
     const [password_confirmation, setPasswordConfirmation] = useState('')
@@ -26,7 +27,7 @@ const Registration = () => {
     const { token } = router.query
      const submitForm = event => {
         event.preventDefault()
-        registration({ name, surname, password, password_confirmation, token, setErrors })
+        registration({ name, surname, password, password_confirmation, token, phone, setErrors })
     } 
 
     return (
@@ -68,6 +69,19 @@ const Registration = () => {
                             value={surname}
                             className="block mt-1 w-full"
                             onChange={event => setSurname(event.target.value)}
+                            autoFocus
+                        />
+                    </div>
+					
+					 <div>
+                        <Label htmlFor="phone">Téléphone</Label>
+
+                        <Input
+                            id="phone"
+                            type="text"
+                            value={phone}
+                            className="block mt-1 w-full"
+                            onChange={event => setPhone(event.target.value)}
                             autoFocus
                         />
                     </div>

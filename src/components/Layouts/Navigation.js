@@ -10,9 +10,9 @@ import { useState } from 'react'
 import { toast } from 'react-toastify'
 import ModalProfile from '@/components/ModalProfile'
 import ModalSignature from '@/components/ModalSignature'
-import { useSelector } from 'react-redux'
 
-const Navigation = () => {
+const Navigation = ({ user }) => {
+
     const router = useRouter()
 
     const { logout } = useAuth()
@@ -20,8 +20,6 @@ const Navigation = () => {
     const [open, setOpen] = useState(false)
     const[showModal, setShowModal] = useState(false)
     const[showModalSignature, setShowModalSignature] = useState(false)
-
-    const user = useSelector((state) => state.userReducer.user)
     
     return (
         <nav className="bg-white border-b border-gray-100">
@@ -32,6 +30,7 @@ const Navigation = () => {
                     showModal={showModal} 
                     setShowModal={setShowModal} 
                     notify={toast} 
+                    user={user}
                 />
 
                 <ModalSignature
@@ -94,6 +93,12 @@ const Navigation = () => {
                                 active={router.pathname == '/sequences'}>
                                 Sequences
                             </NavLink>
+
+                            <NavLink
+                                href="/sections"
+                                active={router.pathname == '/sections'}>
+                                Sections
+                            </NavLink>
                         </div>
                     </div>
 
@@ -104,7 +109,7 @@ const Navigation = () => {
                             width="48"
                             trigger={
                                 <button className="flex items-center text-sm font-medium text-gray-500 hover:text-gray-700 focus:outline-none transition duration-150 ease-in-out">
-                                    <div>{user?.surname} {user?.name}</div>
+                                    <div>{user?.payload.surname} {user?.payload.name}</div>
 
                                     <div className="ml-1">
                                         <svg
@@ -129,7 +134,7 @@ const Navigation = () => {
                                 Signature
                             </DropdownButton>
                             <DropdownButton>
-                                <Link href="/academy">
+                                <Link href="/academies">
                                     <a>Academies</a>
                                 </Link>
                             </DropdownButton>
@@ -216,6 +221,12 @@ const Navigation = () => {
                             href="/sequences"
                             active={router.pathname == '/sequences'}>
                             Salles
+                        </ResponsiveNavLink>
+
+                        <ResponsiveNavLink
+                            href="/sections"
+                            active={router.pathname == '/sections'}>
+                            Sections
                         </ResponsiveNavLink>
                     </div>
 

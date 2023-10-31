@@ -22,9 +22,11 @@ const customStyles = {
    
 };
 
+const type = "academies"
+
 const Academy = () => {
 
-    const [academies, setAcademies] = useState([])
+    const [state, setState] = useState([])
     const [selectedRows, setSelectedRows] = useState(false)
     const [toggleCleared, setToggleCleared] = useState(false)
     const [filterText, setFilterText] = useState('')
@@ -36,16 +38,16 @@ const Academy = () => {
     const [errors, setErrors] = useState([])
     const [active, setActive] = useState(true)
 	
-    const filteredItems = academies.filter(
+    const filteredItems = state.filter(
 		item => item.name && item.name.toLowerCase().includes(filterText.toLowerCase()),
 	)
 
-    const { getAcademies, addAcademy, updateAcademy } = useUser({
+    const { list, addAcademy, updateAcademy, removeAcademy } = useUser({
         middleware: 'auth',
     })
 
     useEffect(() => { 
-       getAcademies({ setAcademies, setPending })
+       list({ setState, setPending, type })
     },[])
 
     const handleDetails = (academy_id) => {
@@ -115,18 +117,24 @@ const Academy = () => {
     const contextActions = useMemo(() => {
 		const handleDelete = () => {
 			
-			if (window.confirm(`Are you sure you want to delete:\r ${selectedRows.map(r => r.title)}?`)) {
+			if (window.confirm(`Are you sure you want to deleted:\r ${selectedRows.map(r => r.title)}?`)) {
 				setToggleCleared(!toggleCleared);
-				setAcademies(differenceBy(academies, selectedRows, 'title'));
+                let slugs = "";
+                selectedRows.forEach((item, index) => {
+                    if(index == (selectedRows.length - 1)) slugs += item.slug
+                    else slugs += item.slug + ';'
+                })
+                removeAcademy({ setErrors, setWaiting, slugs, state, setState })
+				//setAcademies(differenceBy(academies, selectedRows, 'title'));
 			}
 		};
 
 		return (
-			<Button key="delete" onClick={handleDelete} style={{ backgroundColor: 'red' }}>
-				Delete
+			<Button disabled={waiting} key="delete" onClick={handleDelete} style={{ backgroundColor: 'red' }}>
+				{ waiting ? 'Suppression...' : 'Supprimer' }
 			</Button>
 		);
-	}, [academies, selectedRows, toggleCleared]);
+	}, [state, selectedRows, toggleCleared]);
 
     const subHeaderComponentMemo = useMemo(() => {
 		const handleClear = () => {
@@ -143,7 +151,7 @@ const Academy = () => {
 
     const save = (e) => {
         e.preventDefault()
-        addAcademy({ name, setLoading, setErrors, setAcademies, academies, setActive, setName})
+        addAcademy({ name, setLoading, setErrors, setState, state, setActive, setName})
     }
 
     const handleChange = (e) => setName(e.target.value)

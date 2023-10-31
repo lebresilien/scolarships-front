@@ -11,7 +11,7 @@ export const useUser = ({ middleware  } = {}) => {
         await csrf()
 
         setErrors([])
-
+console.log('props sata :::://////..', props);
         axios
             .post('/api/v1/invitation', props)
             .then(() => {
@@ -41,35 +41,29 @@ export const useUser = ({ middleware  } = {}) => {
             })
     }
 
-    const addSection = async ({ setErrors, setName, setDescription, setLoading, setSections, content, ...props }) => {
+    const updateSection = async({id, setState, setErrors, setLoading, setOpen, setPending, ...props}) => {
         setLoading(true)
         await csrf()
 
         setErrors([])
-
         axios
-            .post('/api/v1/'+content+'s', props)
-            .then(() => {
-                toast('Section rajoutée avec succés.')
-                setName('')
-                setDescription('')
-                getSection({ setSections })
-            })
-            .catch(error => {
-                setErrors(Object.values(error.response.data.errors).flat())
-            })
-        setLoading(false)
-    }
+        .put('/api/v1/sections/'+id, props)
+        .then(() => {
 
-    const getSection = async ({ setSections, setDefaultSection }) => {
-        await csrf()
-        
-        axios.get('/api/v1/sections')
-         .then(res => {
-            setSections(res.data)
-            if(setDefaultSection) setDefaultSection(res.data[0].id)
-         })
+            toast('Section modifiée avec succés.')
+
+            const copySection = [...props.state]
+            const currentItem = copySection.find(item => item.id === id)
+            currentItem.name = props.name
+            currentItem.description = props.description
+            setState(copySection)
             
+            setOpen(false)
+        })
+        .catch(error => {
+            setErrors(Object.values(error.response.data.errors).flat())
+        })
+        setLoading(false)
     }
 
     const addGroup = async ({ setErrors, setName, setDescription, setFees, setGroups, setLoading, setPending, ...props }) => {
@@ -106,33 +100,33 @@ export const useUser = ({ middleware  } = {}) => {
          setPending && setPending(false) 
     }
 
-    const updateGroup = async({slug, setGroups, setErrors, setLoading, setOpen, setPending, ...props}) => {
+    const updateGroup = async({additional, id, setState, state, setErrors, setLoading, setOpen, setPending, ...props}) => {
         setLoading(true)
         await csrf()
 
         setErrors([])
         axios
-        .put('/api/v1/groups/'+slug, props)
+        .put('/api/v1/groups/'+id, props)
         .then(() => {
             toast('Groupe modifiée avec succés.')
+
+            const item = additional.find(group => group.value == props.section_id)
+            const copySection = [...state]
+            const currentItem = copySection.find(item => item.id === id)
+         
+            currentItem.name = props.name
+            currentItem.description = props.description
+            currentItem.group = item
+            currentItem.fees = props.fees
+ 
+            setState(copySection)
+
             setOpen(false)
-            getGroup({ setGroups, setPending })
         })
         .catch(error => {
             setErrors(Object.values(error.response.data.errors).flat())
         })
         setLoading(false)
-    }
-
-    const getAcademies = async ({ setAcademies, setPending }) => {
-        //setPending(true)
-        await csrf()
-        
-        axios.get('/api/v1/academies')
-         .then(res => {
-            setAcademies(res.data)
-         })
-        setPending(false)   
     }
 
     const addBuilding = async ({ setErrors,setName, setDescription, setBuildings, setLoad, ...props }) => {
@@ -168,23 +162,32 @@ export const useUser = ({ middleware  } = {}) => {
         setPend && setPend(false)
     }
 
-    const updateBuilding = async({slug, setBuildings, setErrors, setLoad, setPend, setOpen, ...props}) => {
-        setLoad(true)
+    const updateBuilding = async({id, additional, setState, setErrors, state, setLoading, setOpen, ...props}) => {
+        setLoading(true)
         await csrf()
 
         setErrors([])
         axios
-        .put('/api/v1/buildings/'+slug, props)
+        .put('/api/v1/buildings/'+id, props)
         .then(() => {
+
             toast('Batiment modifié avec succés.')
+
+            const copySection = [...state]
+            const currentItem = copySection.find(item => item.id === id)
+         
+            currentItem.name = props.name
+            currentItem.description = props.description
+            currentItem.group = item
+            currentItem.fees = props.fees
+ 
+            setState(copySection)
             setOpen(false)
-            setPend(true)
-            getBuilding({ setBuildings, setPend })
         })
         .catch(error => {
             setErrors(Object.values(error.response.data.errors).flat())
         })
-        setLoad(false)
+        setLoading(false)
     }
 
     const showBuilding = async ({ slug, setLoaded, setData, setErrors }) => {
@@ -327,7 +330,7 @@ export const useUser = ({ middleware  } = {}) => {
             
     }
 
-    const addCourse = async ({ setErrors, setLoading, setCourses, setPending, ...props }) => {
+   /*  const addCourse = async ({ setErrors, setLoading, setCourses, setPending, ...props }) => {
 
         setLoading(true)
 
@@ -347,9 +350,9 @@ export const useUser = ({ middleware  } = {}) => {
             })
             
         setLoading(false)
-    }
+    } */
 
-    const addAcademy = async ({ setErrors, setLoading, setAcademies, academies, setActive, setName, ...props }) => {
+    const addAcademy = async ({ setErrors, setLoading, setState, state, setActive, setName, ...props }) => {
 
         setLoading(true)
 
@@ -359,17 +362,20 @@ export const useUser = ({ middleware  } = {}) => {
 
         axios
             .post('/api/v1/academies', props)
-            .then((res) => {
+            .then(() => {
                 const date = new Date()
                 const newAcademy = {
-                    id: parseInt(academies.slice(-1)[0].id + 1),
+                    id: parseInt(state.slice(-1)[0].id + 1),
                     name: props.name,
                     slug: props.name,
                     created_at: date.getFullYear() + '-' + parseInt(date.getMonth() + 1 ) + '-' + date.getDate(),
                     status: 1
                 }
                 setActive(true)
-                setAcademies([newAcademy].concat(academies))
+                setState([
+                    newAcademy,
+                    ...state
+                ])
                 setName('')
                 toast('L\'annné academique a été rajoutée avec succés.')
             })
@@ -397,6 +403,32 @@ export const useUser = ({ middleware  } = {}) => {
             })
            
         setWaiting(false)  
+    }
+
+    const remove = async({ setErrors, setWaiting, ids, state, setState, type}) => {
+        setWaiting(true)
+        await csrf()
+
+        axios.delete('/api/v1/'+type+'/'+ids)
+            .then(() => {
+                
+                const myArray = ids.split(';')
+                let newArr = [];
+                
+                for(const i in myArray) {
+                    newArr.push(parseInt(myArray[i]))
+                }
+                
+                setState(
+                    state.filter(item =>
+                    !newArr.includes(item.id)
+                ))
+                
+            })
+            .catch(error => {
+                setErrors(Object.values(error.response.data.errors).flat())
+            })
+            setWaiting(false)
     }
 
     const getStudents = async ({ setStudents, setPending }) => {
@@ -502,17 +534,19 @@ export const useUser = ({ middleware  } = {}) => {
         setPending(false)
     }
 
-    const getCourses = async ({ setCourses, setPending }) => {
+    const list = async ({ setState, setPending, type, setAdditionals }) => {
+        
         await csrf()
         setPending(true)
         
-        axios.get('/api/v1/courses')
+        axios.get('/api/v1/'+type)
          .then(res => {
-            setCourses(res.data)
-            console.log(res.data)
-         })
+            const data = res.data
+            setState(data.state)
+            setAdditionals && setAdditionals(data.additional)
+        })
          
-         setPending(false) 
+        setPending(false) 
     }
 
     const showCourse = async ({ slug, setShowModal, setUpdate, setGroups, setName, setSlug, setValue }) => {
@@ -541,7 +575,7 @@ export const useUser = ({ middleware  } = {}) => {
             
     }
 
-    const updateCourse = async ({ setErrors, setLoading, setCourses, setPending, setOpen, ...props }) => {
+    const updateCourse = async ({ additional, id, setState, setErrors, setLoading, setOpen, setPending, ...props }) => {
 
         setLoading(true)
 
@@ -550,10 +584,20 @@ export const useUser = ({ middleware  } = {}) => {
         setErrors([])
 
         axios
-            .put('/api/v1/courses/'+props.slug, props)
+            .put('/api/v1/courses/'+id, props)
             .then(() => {
-                getCourses({ setCourses, setPending })
                 toast('Matiere modifiée avec succés.')
+                
+                const item = additional.find(group => group.value == props.unit_id)
+                const copySection = [...props.state]
+                const currentItem = copySection.find(item => item.id === id)
+               
+                currentItem.name = props.name
+                currentItem.description = props.description
+                currentItem.coeff = props.coeff
+                currentItem.group = item
+    
+                setState(copySection)
                 setOpen(false)
             })
             .catch(error => {
@@ -776,11 +820,121 @@ export const useUser = ({ middleware  } = {}) => {
         setPending(false)
     }
 
+    const add = async ({ additional, setErrors, setName, setDescription, setCoeff, setLoading, setState, state, type, ...props }) => {
+        setLoading(true)
+        await csrf()
+
+        setErrors([])
+
+        axios
+            .post('/api/v1/'+type, props)
+            .then(() => {
+
+                toast('Operation effectuée avec succés.')
+                setName('')
+                setDescription('')
+                setCoeff && setCoeff('')
+
+                const d = new Date()
+
+                if(additional) {
+                    
+                    if(type === "courses") {
+
+                        const item = additional.find(group => group.value == props.unit_id)
+                        
+                        const newItem = {
+                            name: props.name,
+                            coeff: props.coeff,
+                            group: item,
+                            description: props.description,
+                            created_at: d.getFullYear() + '-' + parseInt(d.getMonth() + 1) + '-'+ d.getDate()
+                        }
+                        setState([
+                            newItem,
+                            ...state
+                        ])
+                    } else if(type === "groups") {
+
+                        const item = additional.find(group => group.value == props.section_id)
+
+                        const newItem = {
+                            name: props.name,
+                            fees: props.fees,
+                            group: item,
+                            description: props.description,
+                            created_at: d.getFullYear() + '-' + parseInt(d.getMonth() + 1) + '-'+ d.getDate()
+                        }
+                        setState([
+                            newItem,
+                            ...state
+                        ])
+                    } else {
+
+                        const item = additional.find(group => group.value == props.group_id)
+
+                        const newItem = {
+                            name: props.name,
+                            group: item,
+                            description: props.description,
+                            created_at: d.getFullYear() + '-' + parseInt(d.getMonth() + 1) + '-'+ d.getDate()
+                        }
+                        setState([
+                            newItem,
+                            ...state
+                        ])
+                    }
+
+                } else {
+                    const newItem = {
+                        name: props.name,
+                        description: props.description,
+                        created_at: d.getFullYear() + '-' + parseInt(d.getMonth() + 1) + '-'+ d.getDate()
+                    }
+                    setState([
+                        newItem,
+                        ...state
+                    ])
+                }
+                
+            })
+            .catch(error => {
+                setErrors(Object.values(error.response.data.errors).flat())
+            })
+        setLoading(false)
+    }
+
+    const updateUnit = async({additional, id, setState, setErrors, setLoading, setOpen, setPending, ...props}) => {
+        setLoading(true)
+        await csrf()
+
+        setErrors([])
+        axios
+        .put('/api/v1/units/'+id, props)
+        .then(() => {
+
+            toast('Unite d\'enseignement modifiée avec succés.')
+
+            const item = additional.find(group => group.value == props.group_id)
+            const copySection = [...props.state]
+            const currentItem = copySection.find(item => item.id === id)
+          
+            currentItem.name = props.name
+            currentItem.description = props.description
+            currentItem.group = item
+ 
+            setState(copySection)
+            setOpen(false)
+        })
+        .catch(error => {
+            setErrors(Object.values(error.response.data.errors).flat())
+        })
+        setLoading(false)
+    }
+
     return {
         sendInvitation,
         updateProfile,
-        addSection,
-        getSection,
         addGroup,
         getGroup,
         addBuilding,
@@ -788,16 +942,14 @@ export const useUser = ({ middleware  } = {}) => {
         addClassroom,
         getClassroom,
         getPrimaryStatistics,
-        addCourse,
         getClassroomsWithGroups,
-        getAcademies,
         addAcademy,
         updateAcademy,
         getStudents,
         addStudent,
         showStudent,
         updateStudent,
-        getCourses,
+        list,
         showCourse,
         updateCourse,
         addTransaction,
@@ -818,6 +970,10 @@ export const useUser = ({ middleware  } = {}) => {
         getSequenceClassroomStats,
         updateGroup,
         updateBuilding,
-        showBuilding
+        showBuilding,
+        updateSection,
+        add,
+        updateUnit,
+        remove
     }
 }

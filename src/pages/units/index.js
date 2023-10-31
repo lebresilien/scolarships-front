@@ -23,25 +23,24 @@ const customStyles = {
    
 };
 
-const type = 'groups'
+const type = "units"
 
-const Group = () => {
+const Unit = () => {
 
     const [state, setState] = useState([])
+    const [selectedRows, setSelectedRows] = useState(false)
     const [additionals, setAdditionals] = useState([])
     const [pending, setPending] = useState(true)
     const [loading, setLoading] = useState(false)
     const [showModal, setShowModal] = useState(false)
     const [name, setName] = useState('')
     const [description, setDescription] = useState('')
-    const [fees, setFees] = useState('')
     const [update, setUpdate] = useState(false)
-    const [selectedGroup, setSelectedGroup] = useState({})
-    const [section_id, setSection_id] = useState('')
     const [filterText, setFilterText] = useState('')
     const [resetPaginationToggle, setResetPaginationToggle] = useState(false)
     const [id, setId] = useState('')
-    const [selectedRows, setSelectedRows] = useState(false)
+    const [group_id, setGroup_id] = useState('')
+    const [selectedGroup, setSelectedGroup] = useState({})
     const [toggleCleared, setToggleCleared] = useState(false)
     const [waiting, setWaiting] = useState(false)
     const [errors, setErrors] = useState([])
@@ -52,7 +51,7 @@ const Group = () => {
 		item => item.name && item.name.toLowerCase().includes(filterText.toLowerCase()),
 	)
 
-    const { list, add, updateGroup, remove } = useUser({
+    const { list, add, updateUnit, remove } = useUser({
         middleware: 'auth'
     })
 
@@ -74,15 +73,14 @@ const Group = () => {
 
     },[])
 
-    const showModalUpdate = (id, name, fees, description, group) => {
+    const showModalUpdate = (id, name, description, group) => {
         setUpdate(true)
         setShowModal(true)
         setName(name)
         setId(id)
         setDescription(description)
-        setFees(fees)
         setSelectedGroup(group)
-        setSection_id(group.value)
+        setGroup_id(group.value)
     }
 
     const columns = [
@@ -92,13 +90,8 @@ const Group = () => {
             sortable: true,
         },
         {
-            name: 'Section',
+            name: 'Groupe',
             selector: row => row.group.label,
-            sortable: true,
-        },
-        {
-            name: 'Pension',
-            selector: row => row.fees,
             sortable: true,
         },
         {
@@ -114,8 +107,8 @@ const Group = () => {
             name: 'Operations',
             selector: row => 
                 <div className="flex flex-row">
-                    <FaEdit className="cursor-pointer mr-2" title="modifier" size={25} onClick={() => showModalUpdate(row.id, row.name, row.fees, row.description, row.group)}/>
-                    <Link href={"groups/"+row.slug}><FaInfoCircle title="details" className="cursor-pointer mr-2" size={25} /></Link>
+                    <FaEdit className="cursor-pointer mr-2" title="modifier" size={25} onClick={() => showModalUpdate(row.id, row.name, row.description, row.group)}/>
+                    <Link href={""+type+"/"+row.slug}><FaInfoCircle title="details" className="cursor-pointer mr-2" size={25} /></Link>
                 </div> 
         }
     ];
@@ -163,18 +156,21 @@ const Group = () => {
         <AppLayout>
 
             <Head>
-                <title>Scolarships - Groupes</title>
+                <title>Scolarships - Enseignements</title>
             </Head>
 
             <div className="py-12" ref={ref}>
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
                     <div className="overflow-hidden shadow-sm sm:rounded-lg">
-                        <div className="py-6 border-b border-gray-200">
+                        <div className="py-6 m-5 lg:m-10 border-b border-gray-200">
 
-                            <AuthValidationErrors className="mb-4 mt-5" errors={errors} />
+                            <AuthValidationErrors 
+                                className="mb-4 mt-5" 
+                                errors={errors} 
+                            />
 
                             <DataTable
-                                title={<TitleComponent title="Groupes" setShowModal={setShowModal} setUpdateName={setName} setUpdateDescription={setDescription} setFees={setFees} />}
+                                title={<TitleComponent title="Unité enseignements" setShowModal={setShowModal} setUpdateName={setName} setUpdateDescription={setDescription} />}
                                 columns={columns}
                                 data={filteredItems}
                                 pagination
@@ -200,27 +196,25 @@ const Group = () => {
             <ModalSection 
                 open={showModal} 
                 setOpen={setShowModal} 
-                title="Groupes"
+                title="Unité d'enseignement"
                 loading={loading}
                 setLoading={setLoading}
-                additional={additionals}
+                state={state}
                 setPending={setPending}
                 update={update}
+                setState={setState}
                 name={name}
                 setName={setName}
                 description={description}
                 setDescription={setDescription}
-                fees={fees}
-                setFees={setFees}
-                id={id}
-                setState={setState}
-                state={state}
+                slug={id}
                 save={add}
-                edit={updateGroup}
-                section_id={section_id}
-                setSection_id={setSection_id}
-                setSelectedGroup={setSelectedGroup}
+                edit={updateUnit}
+                additional={additionals}
+                group_id={group_id}
+                setGroup_id={setGroup_id}
                 selectedGroup={selectedGroup}
+                setSelectedGroup={setSelectedGroup}
                 type={type}
             />
 
@@ -229,4 +223,4 @@ const Group = () => {
 
 }
 
-export default Group;
+export default Unit;

@@ -9,16 +9,16 @@ import Image from 'next/image'
 import Button from '@/Components/Button'
 import { BsEyeSlashFill, BsEyeFill } from "react-icons/bs"
 import { AiOutlineSetting, AiFillExclamationCircle } from "react-icons/ai"
-import { firstCharacter } from '@/hooks/utils'
-import { useSelector } from 'react-redux'
+/* import { firstCharacter } from '@/hooks/utils'
+import { useSelector } from 'react-redux' */
 
-export default function ModalProfile({showModal, setShowModal })  {
+export default function ModalProfile({showModal, setShowModal, user })  {
  
   const { updateProfile } = useUser({
     middleware: 'auth',
   })
 
-  const user = useSelector((state) => state.userReducer.user)
+ // const user = useSelector((state) => state.userReducer.user)
 
  const [errors, setErrors] = useState([])
  const [name, setName] = useState(user?.name)

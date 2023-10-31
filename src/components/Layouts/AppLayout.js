@@ -1,16 +1,13 @@
 import Navigation from '@/components/Layouts/Navigation'
 import { useAuth } from '@/hooks/auth'
-import { useDispatch } from 'react-redux'
-import { updateUser } from '@/redux/userReducer'
 
 const AppLayout = ({ header, children }) => {
+
     const { user } = useAuth({ middleware: 'auth' })
-    const dispatch = useDispatch()
-    dispatch(updateUser(user))
-    
+
     return (
         <div className="min-h-screen bg-gray-100">
-            <Navigation />
+            <Navigation  user={user} />
 
             {/* Page Heading */}
             <header className="">

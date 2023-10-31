@@ -6,7 +6,7 @@ import  FilterComponent  from '@/components/FilterComponent'
 import { useState, useEffect, useMemo } from "react"
 import { FaEdit } from 'react-icons/fa'
 import TitleComponent from '@/components/TitleComponent'
-import ModalCourse from '@/components/ModalCourse'
+import ModalSection from '@/components/ModalSection'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 
@@ -20,14 +20,13 @@ const customStyles = {
    
 };
 
+const type = "courses"
+
 
 const Courses = () => {
 
-    const [courses, setCourses] = useState([])
-    const [units, setUnits] = useState([])
-    const [course, setCourse] = useState({})
-    const [groups, setGroups] = useState([])
-    const [classrooms, setClassrooms] = useState([])
+    const [state, setState] = useState([])
+    const [additionals, setAdditionals] = useState([])
     const [showModal, setShowModal] = useState(false)
     const [filterText, setFilterText] = useState('')
     const [update, setUpdate] = useState(false)
@@ -35,22 +34,25 @@ const Courses = () => {
     const [loading, setLoading] = useState(false)
     const [resetPaginationToggle, setResetPaginationToggle] = useState(false)
     const [name, setName] = useState('')
-    const [slug, setSlug] = useState('')
-    const [value, setValue] = useState({})
+    const [selectedGroup, setSelectedGroup] = useState({})
+    const [unit_id, setUnit_id] = useState('')
+    const [description, setDescription] = useState('')
+    const [coeff, setCoeff] = useState('')
+    const [id, setId] = useState('')
 
-    const filteredItems = courses.filter(
+    const filteredItems = state.filter(
 		item => item.name && item.name.toLowerCase().includes(filterText.toLowerCase()),
 	)
 
-    const { getClassroomsWithGroups, getCourses, showCourse } = useUser({
+    const { list, add, updateCourse } = useUser({
         middleware: 'auth'
     })
 
     useEffect(() => { 
 
-        getClassroomsWithGroups({ setClassrooms, setLoading, setUnits })
+        //getClassroomsWithGroups({ setClassrooms, setLoading, setUnits })
 
-        getCourses({ setCourses, setPending })
+        list({ setState, setPending, type, setAdditionals })
 
     },[])
 
@@ -62,7 +64,17 @@ const Courses = () => {
         },
         {
             name: 'Categorie',
-            selector: row => row.unit.name,
+            selector: row => row.group.label,
+            sortable: true,
+        },
+        {
+            name: 'Coefficient',
+            selector: row => row.coeff,
+            sortable: true,
+        },
+        {
+            name: 'Description',
+            selector: row => row.description,
             sortable: true,
         },
         {
@@ -71,7 +83,7 @@ const Courses = () => {
         },
         {
             name: 'Operations',
-            selector: row => <div className="flex flex-row"><FaEdit className="cursor-pointer mr-2" size={25} onClick={() => showModalUpdate(row.slug)}/></div>
+            selector: row => <div className="flex flex-row"><FaEdit className="cursor-pointer mr-2" size={25} onClick={() => showModalUpdate(row.id, row.name, row.description, row.group, row.coeff)}/></div>
         }
     ];
 
@@ -88,9 +100,15 @@ const Courses = () => {
         );
 	}, [filterText, resetPaginationToggle]);
 
-    const showModalUpdate = (slug) => {
-
-        showCourse({ setCourse, slug, setShowModal, setUpdate, setGroups, setName, setSlug, setValue })
+    const showModalUpdate = (id, name, description, group, coeff) => {
+        setUpdate(true)
+        setShowModal(true)
+        setName(name)
+        setId(id)
+        setDescription(description)
+        setSelectedGroup(group)
+        setUnit_id(group.value)
+        setCoeff(coeff)
     }
 
     return (
@@ -127,26 +145,32 @@ const Courses = () => {
 
             <ToastContainer />
 
-            <ModalCourse 
+            <ModalSection 
                 open={showModal} 
                 setOpen={setShowModal} 
                 title="Matière"
                 loading={loading}
                 setLoading={setLoading}
-                classrooms={classrooms}
                 setPending={setPending}
-                setCourses={setCourses}
+                setState={setState}
+                state={state}
                 update={update}
                 setUpdate={setUpdate}
-                setCourse={setCourse}
-                groups={groups}
-                setGroups={setGroups}
                 name={name}
                 setName={setName}
-                slug={slug}
-                units={units}
-                value={value}
-                setValue={setValue}
+                slug={id}
+                additional={additionals}
+                save={add}
+                edit={updateCourse}
+                type={type}
+                selectedGroup={selectedGroup}
+                unit_id={unit_id}
+                setUnit_id={setUnit_id}
+                description={description}
+                setDescription={setDescription}
+                setSelectedGroup={setSelectedGroup}
+                coeff={coeff}
+                setCoeff={setCoeff}
             />
 
         </AppLayout>
