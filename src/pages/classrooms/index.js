@@ -59,7 +59,7 @@ const Classroom = () => {
 		item => item.name && item.name.toLowerCase().includes(filterText.toLowerCase()),
 	)
 
-    const { list, add, remove, updateClassroom } = useUser({
+    const { list, add, remove, edit} = useUser({
         middleware: 'auth'
     })
 
@@ -226,7 +226,7 @@ const Classroom = () => {
                 setDescription={setDescription}
                 id={id}
                 save={add}
-                edit={updateClassroom}
+                edit={edit}
                 additional={additionals}
                 other={others}
                 group_id={group_id}

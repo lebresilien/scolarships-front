@@ -51,7 +51,7 @@ const Unit = () => {
 		item => item.name && item.name.toLowerCase().includes(filterText.toLowerCase()),
 	)
 
-    const { list, add, updateUnit, remove } = useUser({
+    const { list, add, edit, remove } = useUser({
         middleware: 'auth'
     })
 
@@ -209,7 +209,7 @@ const Unit = () => {
                 setDescription={setDescription}
                 slug={id}
                 save={add}
-                edit={updateUnit}
+                edit={edit}
                 additional={additionals}
                 group_id={group_id}
                 setGroup_id={setGroup_id}

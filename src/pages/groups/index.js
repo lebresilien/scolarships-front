@@ -52,7 +52,7 @@ const Group = () => {
 		item => item.name && item.name.toLowerCase().includes(filterText.toLowerCase()),
 	)
 
-    const { list, add, updateGroup, remove } = useUser({
+    const { list, add, edit, remove } = useUser({
         middleware: 'auth'
     })
 
@@ -216,7 +216,7 @@ const Group = () => {
                 setState={setState}
                 state={state}
                 save={add}
-                edit={updateGroup}
+                edit={edit}
                 section_id={section_id}
                 setSection_id={setSection_id}
                 setSelectedGroup={setSelectedGroup}

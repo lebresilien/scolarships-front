@@ -46,7 +46,7 @@ const Building = () => {
 		item => item.name && item.name.toLowerCase().includes(filterText.toLowerCase()),
 	)
 
-    const { list, add, updateBuilding, remove } = useUser({
+    const { list, add, edit, remove } = useUser({
         middleware: 'auth'
     })
 
@@ -191,7 +191,7 @@ const Building = () => {
                 setState={setState}
                 state={state}
                 save={add}
-                edit={updateBuilding}
+                edit={edit}
                 type={type}
             /> 
 

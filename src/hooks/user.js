@@ -480,7 +480,7 @@ export const useUser = ({ middleware  } = {}) => {
             
     }
 
-    const updateCourse = async ({ additional, id, setState, setErrors, setLoading, setOpen, setPending, ...props }) => {
+    const edit = async ({ type, additional, id, setState, setErrors, setLoading, setOpen, setPending, ...props }) => {
 
         setLoading(true)
 
@@ -489,20 +489,74 @@ export const useUser = ({ middleware  } = {}) => {
         setErrors([])
 
         axios
-            .put('/api/v1/courses/'+id, props)
+            .put('/api/v1/'+type+'/'+id, props)
             .then(() => {
-                toast('Matiere modifiée avec succés.')
+                toast(type + ' modifiée avec succés.')
                 
-                const item = additional.find(group => group.value == props.unit_id)
-                const copySection = [...props.state]
-                const currentItem = copySection.find(item => item.id === id)
-               
-                currentItem.name = props.name
-                currentItem.description = props.description
-                currentItem.coeff = props.coeff
-                currentItem.group = item
+                if(additional) {
+                    
+                    if(type === "courses") {
+
+                        const item = additional.find(group => group.value == props.unit_id)
+                        const copySection = [...props.state]
+                        const currentItem = copySection.find(item => item.id === id)
+                       
+                        currentItem.name = props.name
+                        currentItem.description = props.description
+                        currentItem.coeff = props.coeff
+                        currentItem.group = item
+            
+                        setState(copySection)
+
+                    } else if(type === "groups") {
+
+                        const item = additional.find(group => group.value == props.section_id)
+                        const copySection = [...props.state]
+                        const currentItem = copySection.find(item => item.id === id)
+                    
+                        currentItem.name = props.name
+                        currentItem.description = props.description
+                        currentItem.fees = props.fees
+                        currentItem.group = item
     
-                setState(copySection)
+                        setState(copySection)
+
+                    } else if(type === "classrooms") {
+
+                        const item = additional.find(group => group.value == props.group_id)
+                        const search = other.find(el => el.value == props.building_id)
+                        const copySection = [...props.state]
+                        const currentItem = copySection.find(item => item.id === id)
+                       
+                        currentItem.name = props.name
+                        currentItem.description = props.description
+                        currentItem.building = search
+                        currentItem.group = item
+            
+                        setState(copySection)
+
+                    } else {
+
+                        const item = additional.find(group => group.value == props.group_id)
+                        const copySection = [...props.state]
+                        const currentItem = copySection.find(item => item.id === id)
+                       
+                        currentItem.name = props.name
+                        currentItem.description = props.description
+                        currentItem.group = item
+            
+                        setState(copySection)
+                    }
+
+                } else {
+                    const copySection = [...props.state]
+                    const currentItem = copySection.find(item => item.id === id)
+                
+                    currentItem.name = props.name
+                    currentItem.description = props.description
+                    setState(copySection)
+                }
+             
                 setOpen(false)
             })
             .catch(error => {
@@ -866,7 +920,7 @@ export const useUser = ({ middleware  } = {}) => {
         updateStudent,
         list,
         showCourse,
-        updateCourse,
+        edit,
         addTransaction,
         addExtended,
         getStudentTransactionsAndExtensions,

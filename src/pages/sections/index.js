@@ -47,7 +47,7 @@ const Section = () => {
     const filteredItems = state.filter(
 		item => item.name && item.name.toLowerCase().includes(filterText.toLowerCase()),
 	)
-    const { add, updateSection, list, remove } = useUser({
+    const { add, edit, list, remove } = useUser({
         middleware: 'auth',
     })
 
@@ -195,7 +195,7 @@ const Section = () => {
                 setDescription={setDescription}
                 id={id}
                 save={add}
-                edit={updateSection}
+                edit={edit}
                 type={type}
             />
 

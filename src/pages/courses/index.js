@@ -44,16 +44,12 @@ const Courses = () => {
 		item => item.name && item.name.toLowerCase().includes(filterText.toLowerCase()),
 	)
 
-    const { list, add, updateCourse } = useUser({
+    const { list, add, edit, remove } = useUser({
         middleware: 'auth'
     })
 
     useEffect(() => { 
-
-        //getClassroomsWithGroups({ setClassrooms, setLoading, setUnits })
-
         list({ setState, setPending, type, setAdditionals })
-
     },[])
 
     const columns = [
@@ -161,7 +157,7 @@ const Courses = () => {
                 slug={id}
                 additional={additionals}
                 save={add}
-                edit={updateCourse}
+                edit={edit}
                 type={type}
                 selectedGroup={selectedGroup}
                 unit_id={unit_id}

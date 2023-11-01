@@ -14,10 +14,9 @@ const ModalSection = ({type, setSelectedGroup, setGroup_id, group_id, open, setO
     const submitForm = (e) => {
 
         e.preventDefault();
-        console.log('see', id)
 
         {update ? 
-            edit({id, name, fees, description, setLoading, setPending, setErrors, setState, setOpen, state, group_id, additional, setUnit_id, coeff, setCoeff, unit_id, setSection_id, section_id, building_id, setBuilding_id, other}) :
+            edit({id, type, name, fees, description, setLoading, setPending, setErrors, setState, setOpen, state, group_id, additional, setUnit_id, coeff, setCoeff, unit_id, setSection_id, section_id, building_id, setBuilding_id, other}) :
             save({ fees, setFees, name, description, setName, setDescription, setLoading, setPending, setErrors, setState, state, group_id, additional, type, coeff, setCoeff, setUnit_id, unit_id, setSection_id, section_id, building_id, setBuilding_id, other })
         }
     }
