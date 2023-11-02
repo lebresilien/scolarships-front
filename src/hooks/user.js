@@ -722,20 +722,21 @@ export const useUser = ({ middleware  } = {}) => {
         setPending(false)
     }
 
-    const getSequenceSectionStats = async ({ slug, setStatistics, setPending }) => {
+    const getSequenceSectionStats = async ({ id, setStatistics, setPending, setTitle }) => {
         await csrf()
         
-        axios.get('/api/v1/sequences/'+slug+'/sections')
+        axios.get('/api/v1/sequences/'+id+'/sections')
          .then(res => {
-            setStatistics(res.data)
+            setStatistics(res.data.data)
+            setTitle(res.data.title)
             setPending(true)
          })   
     }
 
-    const getSequenceGroupStats = async ({ slug, sectionId, setStatistics, setPending }) => {
+    const getSequenceGroupStats = async ({ id, sectionId, setStatistics, setPending }) => {
         await csrf()
         
-        axios.get('/api/v1/sequences/'+slug+'/groups/'+sectionId)
+        axios.get('/api/v1/sequences/'+id+'/groups/'+sectionId)
          .then(res => {
             setStatistics(res.data)
             setPending(true)
@@ -786,7 +787,7 @@ export const useUser = ({ middleware  } = {}) => {
 
         axios
             .post('/api/v1/'+type, props)
-            .then(() => {
+            .then((res) => {
 
                 toast('Operation effectuée avec succés.')
                 setName('')
@@ -802,6 +803,7 @@ export const useUser = ({ middleware  } = {}) => {
                         const item = additional.find(group => group.value == props.unit_id)
                         
                         const newItem = {
+                            id: res.data.id,
                             name: props.name,
                             coeff: props.coeff,
                             group: item,
@@ -817,6 +819,7 @@ export const useUser = ({ middleware  } = {}) => {
                         const item = additional.find(group => group.value == props.section_id)
 
                         const newItem = {
+                            id: res.data.id,
                             name: props.name,
                             fees: props.fees,
                             group: item,
@@ -833,6 +836,7 @@ export const useUser = ({ middleware  } = {}) => {
                         const search = other.find(el => el.value == props.building_id)
 
                         const newItem = {
+                            id: res.data.id,
                             name: props.name,
                             group: item,
                             building: search,
@@ -849,6 +853,7 @@ export const useUser = ({ middleware  } = {}) => {
                         const item = additional.find(group => group.value == props.group_id)
 
                         const newItem = {
+                            id: res.data.id,
                             name: props.name,
                             group: item,
                             description: props.description,
@@ -862,6 +867,7 @@ export const useUser = ({ middleware  } = {}) => {
 
                 } else {
                     const newItem = {
+                        id: res.data.id,
                         name: props.name,
                         description: props.description,
                         created_at: d.getFullYear() + '-' + parseInt(d.getMonth() + 1) + '-'+ d.getDate()

@@ -10,8 +10,9 @@ const Statistics = () => {
 
     const [statistics, setStatistics] = useState([])
     const [pending, setPending] = useState(false)
+    const [title, setTitle] = useState('')
     const router = useRouter()
-    const { slug } = router.query
+    const { id } = router.query
 
     const { getSequenceSectionStats } = useUser({
         middleware: 'auth',
@@ -19,9 +20,9 @@ const Statistics = () => {
 
      useEffect(() => {
 
-        slug && getSequenceSectionStats({ slug, setStatistics, setPending })
+        id && getSequenceSectionStats({ id, setStatistics, setPending, setTitle})
 
-    }, [slug]);  
+    }, [id]);  
     
     return (
 
@@ -36,7 +37,7 @@ const Statistics = () => {
 
                     <div className="flex flex-col justify-center items-center">
                         <h3 className="font-bold text-xl leading-4 text-gray-900 leading-10">
-                            Statistiques { slug }
+                            Statistiques { title }
                         </h3>
                     </div>
 
