@@ -1,4 +1,5 @@
 import axios from '@/lib/axios'
+import useSWR from 'swr'
 import { toast } from 'react-toastify';
 
 export const useUser = ({ middleware  } = {}) => {
@@ -592,6 +593,20 @@ export const useUser = ({ middleware  } = {}) => {
          .then(res => {
             setStudents(res.data)
         })
+    }
+
+    const getSequence = async ({ setSequences, setPending, setErrors }) => {
+        await csrf()
+      
+        axios.get('/api/v1/sequences')
+        .then(res => {
+            setSequences(res.data)
+        })
+        .catch(error => {
+            setErrors(Object.values(error.response.data.errors).flat())
+        })
+        
+        setPending(false)
     }
 
     const getSequenceSectionStats = async ({ id, setStatistics, setPending, setTitle }) => {

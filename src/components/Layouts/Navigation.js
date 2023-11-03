@@ -59,9 +59,9 @@ const Navigation = ({ user }) => {
                             </NavLink>
 
                             <NavLink
-                                href="/inscription"
-                                active={router.pathname == '/inscription'}>
-                                Inscription
+                                href="/students"
+                                active={router.pathname == '/strudents'}>
+                                Apprenants
                             </NavLink>
 
                             <NavLink
@@ -188,9 +188,9 @@ const Navigation = ({ user }) => {
                         </ResponsiveNavLink>
                         
                         <ResponsiveNavLink
-                            href="/inscription"
-                            active={router.pathname == '/inscription'}>
-                            Inscription
+                            href="/students"
+                            active={router.pathname == '/students'}>
+                            Apprenants
                         </ResponsiveNavLink>
 
                         <ResponsiveNavLink
