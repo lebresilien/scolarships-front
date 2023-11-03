@@ -1,5 +1,4 @@
 import axios from '@/lib/axios'
-import useSWR from 'swr'
 import { toast } from 'react-toastify';
 
 export const useUser = ({ middleware  } = {}) => {
@@ -41,89 +40,6 @@ export const useUser = ({ middleware  } = {}) => {
             })
     }
 
-    const updateSection = async({id, setState, setErrors, setLoading, setOpen, setPending, ...props}) => {
-        setLoading(true)
-        await csrf()
-
-        setErrors([])
-        axios
-        .put('/api/v1/sections/'+id, props)
-        .then(() => {
-
-            toast('Section modifiée avec succés.')
-
-            const copySection = [...props.state]
-            const currentItem = copySection.find(item => item.id === id)
-            currentItem.name = props.name
-            currentItem.description = props.description
-            setState(copySection)
-            
-            setOpen(false)
-        })
-        .catch(error => {
-            setErrors(Object.values(error.response.data.errors).flat())
-        })
-        setLoading(false)
-    }
-
-    const updateGroup = async({additional, id, setState, state, setErrors, setLoading, setOpen, setPending, ...props}) => {
-        setLoading(true)
-        await csrf()
-
-        setErrors([])
-        axios
-        .put('/api/v1/groups/'+id, props)
-        .then(() => {
-            toast('Groupe modifiée avec succés.')
-
-            const item = additional.find(group => group.value == props.section_id)
-            const copySection = [...state]
-            const currentItem = copySection.find(item => item.id === id)
-         
-            currentItem.name = props.name
-            currentItem.description = props.description
-            currentItem.group = item
-            currentItem.fees = props.fees
- 
-            setState(copySection)
-
-            setOpen(false)
-        })
-        .catch(error => {
-            setErrors(Object.values(error.response.data.errors).flat())
-        })
-        setLoading(false)
-    }
-
-    
-    const updateBuilding = async({id, additional, setState, setErrors, state, setLoading, setOpen, ...props}) => {
-        setLoading(true)
-        await csrf()
-
-        setErrors([])
-        axios
-        .put('/api/v1/buildings/'+id, props)
-        .then(() => {
-
-            toast('Batiment modifié avec succés.')
-
-            const copySection = [...state]
-            const currentItem = copySection.find(item => item.id === id)
-         
-            currentItem.name = props.name
-            currentItem.description = props.description
-            currentItem.group = item
-            currentItem.fees = props.fees
- 
-            setState(copySection)
-            setOpen(false)
-        })
-        .catch(error => {
-            setErrors(Object.values(error.response.data.errors).flat())
-        })
-        setLoading(false)
-    }
-
     const showBuilding = async ({ slug, setLoaded, setData, setErrors }) => {
        
         await csrf()
@@ -136,36 +52,6 @@ export const useUser = ({ middleware  } = {}) => {
             setErrors(Object.values(error.response.data.errors).flat())
         })
         setLoaded(false)
-    }
-
-    const updateClassroom = async({other, additional, id, setState, state, setErrors, setLoading, setOpen, setPending, ...props}) => {
-        setLoading(true)
-        await csrf()
-
-        setErrors([])
-        axios
-        .put('/api/v1/classrooms/'+id, props)
-        .then(() => {
-            toast('Classe modifiée avec succés.')
-
-            const item = additional.find(group => group.value == props.group_id)
-            const search = other.find(el => el.value == props.building_id)
-            const copySection = [...state]
-
-            const currentItem = copySection.find(item => item.id === id)
-         
-            currentItem.name = props.name
-            currentItem.description = props.description
-            currentItem.group = item
-            currentItem.building = search
- 
-            setState(copySection)
-            setOpen(false)
-        })
-        .catch(error => {
-            setErrors(Object.values(error.response.data.errors).flat())
-        })
-        setLoading(false)
     }
 
     const showClassroom = async ({ slug, setLoading, setClassroom, setErrors }) => {
@@ -708,20 +594,6 @@ export const useUser = ({ middleware  } = {}) => {
         })
     }
 
-    const getSequence = async ({ setSequences, setPending, setErrors }) => {
-        await csrf()
-      
-        axios.get('/api/v1/sequences')
-        .then(res => {
-            setSequences(res.data)
-        })
-        .catch(error => {
-            setErrors(Object.values(error.response.data.errors).flat())
-        })
-        
-        setPending(false)
-    }
-
     const getSequenceSectionStats = async ({ id, setStatistics, setPending, setTitle }) => {
         await csrf()
         
@@ -885,34 +757,6 @@ export const useUser = ({ middleware  } = {}) => {
         setLoading(false)
     }
 
-    const updateUnit = async({additional, id, setState, setErrors, setLoading, setOpen, setPending, ...props}) => {
-        setLoading(true)
-        await csrf()
-
-        setErrors([])
-        axios
-        .put('/api/v1/units/'+id, props)
-        .then(() => {
-
-            toast('Unite d\'enseignement modifiée avec succés.')
-
-            const item = additional.find(group => group.value == props.group_id)
-            const copySection = [...props.state]
-            const currentItem = copySection.find(item => item.id === id)
-          
-            currentItem.name = props.name
-            currentItem.description = props.description
-            currentItem.group = item
- 
-            setState(copySection)
-            setOpen(false)
-        })
-        .catch(error => {
-            setErrors(Object.values(error.response.data.errors).flat())
-        })
-        setLoading(false)
-    }
-
     return {
         sendInvitation,
         updateProfile,
@@ -934,7 +778,6 @@ export const useUser = ({ middleware  } = {}) => {
         signaturePad,
         showGroup,
         getClasse,
-        updateClassroom,
         showClassroom,
         showClassroomCourses,
         showClassroomStudents,
@@ -943,12 +786,8 @@ export const useUser = ({ middleware  } = {}) => {
         getSequenceSectionStats,
         getSequenceGroupStats,
         getSequenceClassroomStats,
-        updateGroup,
-        updateBuilding,
         showBuilding,
-        updateSection,
         add,
-        updateUnit,
         remove,
         getClassroom
     }
