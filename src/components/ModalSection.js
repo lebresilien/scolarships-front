@@ -7,7 +7,71 @@ import Input from './Input'
 import Textarea from './Textarea'
 import Select from 'react-select'
 
-const ModalSection = ({type, setSelectedGroup, setGroup_id, group_id, open, setOpen, title, update, state, setState, name, description, setName, setDescription, id, loading, setLoading, setPending, save, edit, additional, selectedGroup, coeff, setCoeff, setUnit_id, unit_id, fees, setFees, section_id, setSection_id, other, selectedOther,building_id, setBuilding_id, setSelectedOther }) => {
+const ModalSection = ({
+    type, 
+    setSelectedGroup, 
+    setGroup_id, 
+    group_id, 
+    open, 
+    setOpen, 
+    title, 
+    update, 
+    state, 
+    setState, 
+    name, 
+    description, 
+    setName, 
+    setDescription, 
+    id, 
+    loading, 
+    setLoading, 
+    setPending, 
+    save, 
+    edit, 
+    additional, 
+    selectedGroup, 
+    coeff, 
+    setCoeff, 
+    setUnit_id, 
+    unit_id, 
+    fees, 
+    setFees, 
+    section_id, 
+    setSection_id, 
+    other, 
+    selectedOther,
+    building_id, 
+    setBuilding_id, 
+    setSelectedOther,
+    lname,
+    fname,
+    sexe,
+    born_place,
+    born_at,
+    father_name,
+    mother_name,
+    fphone,
+    mphone,
+    quarter,
+    comming,
+    allergy,
+    setLname,
+    setFname,
+    setSexe,
+    setBornPlace,
+    setBornAt,
+    setFatherName,
+    setMotherName,
+    setFphone,
+    setMphone,
+    setQuarter,
+    setComming,
+    setAllergy,
+    classroom_id,
+    setClassroom_id,
+    amount, 
+    setAmount
+ }) => {
 
     const [errors, setErrors] = useState([])
 
@@ -16,8 +80,93 @@ const ModalSection = ({type, setSelectedGroup, setGroup_id, group_id, open, setO
         e.preventDefault();
 
         {update ? 
-            edit({id, type, name, fees, description, setLoading, setPending, setErrors, setState, setOpen, state, group_id, additional, setUnit_id, coeff, setCoeff, unit_id, setSection_id, section_id, building_id, setBuilding_id, other}) :
-            save({ fees, setFees, name, description, setName, setDescription, setLoading, setPending, setErrors, setState, state, group_id, additional, type, coeff, setCoeff, setUnit_id, unit_id, setSection_id, section_id, building_id, setBuilding_id, other })
+            edit({
+                id, 
+                type, 
+                name, 
+                fees, 
+                description, 
+                setLoading, 
+                setPending, 
+                setErrors, 
+                setState, 
+                setOpen, 
+                state, 
+                group_id, 
+                additional, 
+                setUnit_id, 
+                coeff, 
+                setCoeff, 
+                unit_id, 
+                setSection_id, 
+                section_id, 
+                building_id, 
+                setBuilding_id, 
+                other,
+                allergy,
+                comming,
+                quarter,
+                mphone,
+                fphone,
+                mother_name,
+                father_name,
+                born_at,
+                born_place,
+                sexe,
+                fname,
+                lname
+            }) :
+            save({ 
+                fees, 
+                setFees, 
+                name, 
+                description, 
+                setName, 
+                setDescription, 
+                setLoading, 
+                setPending, 
+                setErrors, 
+                setState, 
+                state, 
+                group_id, 
+                additional, 
+                type, 
+                coeff, 
+                setCoeff, 
+                setUnit_id, 
+                unit_id, 
+                setSection_id, 
+                section_id, 
+                building_id, 
+                setBuilding_id, 
+                other,
+                allergy,
+                comming,
+                quarter,
+                mphone,
+                fphone,
+                mother_name,
+                father_name,
+                born_at,
+                born_place,
+                sexe,
+                fname,
+                lname,
+                classroom_id,
+                amount,
+                setLname,
+                setFname,
+                setSexe,
+                setBornPlace,
+                setBornAt,
+                setFatherName,
+                setMotherName,
+                setFphone,
+                setMphone,
+                setQuarter,
+                setComming,
+                setAllergy
+             })
         }
     }
 
@@ -26,6 +175,7 @@ const ModalSection = ({type, setSelectedGroup, setGroup_id, group_id, open, setO
         else if(type === "courses") setUnit_id(newValue.value)
         else if(type === "groups") setSection_id(newValue.value)
         else if(type === "classrooms") setGroup_id(newValue.value)
+        else if(type === "students") setClassroom_id(newValue.value)
         else setSection_id('')
         update && setSelectedGroup(newValue)
     }
@@ -88,22 +238,24 @@ const ModalSection = ({type, setSelectedGroup, setGroup_id, group_id, open, setO
 
                                         <form onSubmit={submitForm}>
 
-                                            <div className="mt-3 pt-3">
-                                                <div>
-                                                    <Label htmlFor="name">Libellé </Label>
-                                                    <Input
-                                                        id="name"
-                                                        type="text"
-                                                        value={name}
-                                                        className="block mt-1 w-full bg-gray-50"
-                                                        onChange={(e) => setName(e.target.value)}
-                                                        required
-                                                        autoFocus 
-                                                    />
+                                            {type !== "students" && ((
+                                                <div className="mt-3 pt-3">
+                                                    <div>
+                                                        <Label htmlFor="name">Libellé </Label>
+                                                        <Input
+                                                            id="name"
+                                                            type="text"
+                                                            value={name}
+                                                            className="block mt-1 w-full bg-gray-50"
+                                                            onChange={(e) => setName(e.target.value)}
+                                                            required
+                                                            autoFocus 
+                                                        />
+                                                    </div>
                                                 </div>
-                                            </div>
+                                            ))}
 
-                                            {additional && ((
+                                            {additional && type !== 'students' && ((
                                                 <div className="mt-2 pt-3">
                                                     <Label htmlFor="description">Selectioner le groupe </Label>
                                                     <div>
@@ -159,18 +311,279 @@ const ModalSection = ({type, setSelectedGroup, setGroup_id, group_id, open, setO
                                                 </div>
                                             ))}
 
-                                            <div className="mt-2 pt-3">
-                                                <div>
-                                                    <Label htmlFor="description">Description </Label>
+                                            {type === "students" && ((
 
-                                                    <Textarea
-                                                        id="description"
-                                                        value={description}
-                                                        className="block mt-1 w-full"
-                                                        onChange={e => setDescription(e.target.value)}
-                                                    />
+                                                <div>
+                                                    <fieldset className="px-2 my-3 border-2 border-gray-100">
+
+                                                        <legend className="text-medium font-medium text-gray-900">Informations relatives à l'eleve</legend>
+
+                                                        <div className="grid grid-cols-6 gap-6 my-3">
+
+                                                            <div className="col-span-6 sm:col-span-3">
+                                                            
+                                                                <Label htmlFor="first-name" className="block text-sm font-medium text-gray-700">
+                                                                    Nom(s) <span className="text-red-500">*</span>
+                                                                </Label>
+
+                                                                <Input
+                                                                    type="text"
+                                                                    name="fname"
+                                                                    id="first-name"
+                                                                    autoComplete="given-name"
+                                                                    onChange={(e) => setFname(e.target.value)}
+                                                                />
+
+                                                            </div>
+
+                                                            <div className="col-span-6 sm:col-span-3">
+                                                                
+                                                                <Label htmlFor="last-name" className="block text-sm font-medium text-gray-700">
+                                                                    Prénom(s)
+                                                                </Label>
+                                                                
+                                                                <Input
+                                                                    type="text"
+                                                                    name="lname"
+                                                                    id="last-name"
+                                                                    autoComplete="family-name"
+                                                                    onChange={(e) => setLname(e.target.value)}
+                                                                />
+                                                            </div>
+
+                                                            <div className="col-span-6 sm:col-span-3">
+                                                                
+                                                                <Label htmlFor="bornAt" className="block text-sm font-medium text-gray-700">
+                                                                    Né le <span className="text-red-500">*</span>
+                                                                </Label>
+                                                                
+                                                                <Input
+                                                                    required
+                                                                    type="date"
+                                                                    name="born_at"
+                                                                    id="bornAt"
+                                                                    onChange={(e) => setBornAt(e.target.value)}
+                                                                />
+                                                            </div>
+
+                                                            <div className="col-span-6 sm:col-span-3">
+                                                                
+                                                                <Label htmlFor="bornPlace" className="block text-sm font-medium text-gray-700">
+                                                                    A <span className="text-red-500">*</span>
+                                                                </Label>
+                                                                
+                                                                <Input
+                                                                    required
+                                                                    type="text"
+                                                                    name="born_place"
+                                                                    id="bornPlace"
+                                                                    autoComplete
+                                                                    onChange={(e) => setBornPlace(e.target.value)}
+                                                                />
+                                                            </div>
+
+                                                            <div className="col-span-6 sm:col-span-3 pt-3">
+                                                                <div className="flex flex-row mt-5">
+
+                                                                    <Label  className="block text-sm font-medium text-gray-700">
+                                                                        Sexe<span className="text-red-500">*</span>
+                                                                    </Label>
+
+                                                                    <div className="flex items-center ml-2">
+                                                                        <input
+                                                                            id="man-radio"
+                                                                            name="sexe"
+                                                                            type="radio"
+                                                                            checked
+                                                                            value="M"
+                                                                            onClick={(e) => setSexe(e.target.value)}
+                                                                        />
+                                                                        <Label htmlFor="man-radio" className="ml-2 block text-sm font-medium text-gray-700">
+                                                                            Masculin
+                                                                        </Label>
+                                                                    </div>
+
+                                                                    <div className="flex items-center ml-3">
+                                                                        <input
+                                                                            id="woman-radio"
+                                                                            name="sexe"
+                                                                            type="radio"
+                                                                            value="F"
+                                                                            onClick={(e) => setSexe(e.target.value)}
+                                                                        />
+                                                                        <Label htmlFor="woman-radio" className="ml-2 block text-sm font-medium text-gray-700">
+                                                                            Feminin
+                                                                        </Label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <div className="col-span-6 sm:col-span-3">
+                                                                
+                                                                <Label htmlFor="quarter" className="block text-sm font-medium text-gray-700">
+                                                                    Zone de residence <span className="text-red-500">*</span>
+                                                                </Label>
+                                                                
+                                                                <Input
+                                                                    type="text"
+                                                                    name="quarter"
+                                                                    id="quarter"
+                                                                    required
+                                                                    onChange={(e) => setQuarter(e.target.value)}
+                                                                />
+                                                            </div>
+
+                                                            <div className="mt-3 pt-3 col-span-6">
+                                                                <div>
+                                                                    <Label htmlFor="name">Etablissement de provenance </Label>
+                                                                    <Input
+                                                                        id="comming"
+                                                                        type="text"
+                                                                        value={comming}
+                                                                        className="block mt-1 w-full bg-gray-50"
+                                                                        onChange={(e) => setComming(e.target.value)}
+                                                                    />
+                                                                </div>
+                                                            </div>
+
+                                                            <div className="col-span-6">
+                                                                
+                                                                <Label htmlFor="allergy" className="block text-sm font-medium text-gray-700">
+                                                                    Allergies
+                                                                </Label>
+                                                                
+                                                                <Textarea
+                                                                    type="text"
+                                                                    name="allergy"
+                                                                    id="allergy"
+                                                                    className="w-full"
+                                                                    onChange={(e) => setAllergy(e.target.value)}
+                                                                />
+                                                            </div>
+                                                        </div>
+                                                    </fieldset>
+
+                                                    <fieldset className="px-2 my-3 border-2 border-gray-100">
+
+                                                        <legend className="text-medium font-medium text-gray-900">Informations relatives au parent</legend>
+                                                        
+                                                        <div className="grid grid-cols-6 gap-6 my-3">
+                                                        
+                                                            <div className="col-span-6 sm:col-span-3">
+                                                                
+                                                                <Label htmlFor="fatherName" className="block text-sm font-medium text-gray-700">
+                                                                    Nom du pere
+                                                                </Label>
+                                                                
+                                                                <Input
+                                                                    type="text"
+                                                                    name="father_name"
+                                                                    id="fatherName"
+                                                                    autoComplete
+                                                                    onChange={(e) => setFatherName(e.target.value)}
+                                                                />
+                                                            </div>
+
+                                                            <div className="col-span-6 sm:col-span-3">
+                                                                
+                                                                <Label htmlFor="fatherPhone" className="block text-sm font-medium text-gray-700">
+                                                                    Téléphone
+                                                                </Label>
+                                                                
+                                                                <Input
+                                                                    type="text"
+                                                                    name="fphone"
+                                                                    id="fatherPhone"
+                                                                    autoComplete
+                                                                    onChange={(e) => setFphone(e.target.value)}
+                                                                />
+                                                            </div>
+
+                                                            <div className="col-span-6 sm:col-span-3">
+                                                                
+                                                                <Label htmlFor="motherName" className="block text-sm font-medium text-gray-700">
+                                                                    Nom de la mère <span className="text-red-500">*</span>
+                                                                </Label>
+                                                                
+                                                                <Input
+                                                                    required
+                                                                    type="text"
+                                                                    name="mother_name"
+                                                                    id="motherName"
+                                                                    autoComplete
+                                                                    onChange={(e) => setMotherName(e.target.value)}
+                                                                />
+                                                            </div>
+
+                                                            <div className="col-span-6 sm:col-span-3">
+                                                                
+                                                                <Label htmlFor="motherPhone" className="block text-sm font-medium text-gray-700">
+                                                                    Téléphone <span className="text-red-500">*</span>
+                                                                </Label>
+                                                                
+                                                                <Input
+                                                                    required
+                                                                    type="text"
+                                                                    name="mphone"
+                                                                    id="motherPhone"
+                                                                    autoComplete
+                                                                    onChange={(e) => setMphone(e.target.value)}
+                                                                />
+                                                            </div>
+
+                                                        </div>
+                                                    </fieldset>
+
+                                                    <fieldset className="px-2 my-3 border-2 border-gray-100">
+                                                        
+                                                        <legend className="text-medium font-medium text-gray-900">Informations relative à la salle de classe</legend>
+                                                        
+                                                        <div className="grid grid-cols-6 gap-6 my-3">
+
+                                                            <div className="col-span-6 sm:col-span-3">
+
+                                                                <Label htmlFor="classroom" className="block text-sm font-medium text-gray-700">
+                                                                    Selectionner la salle de classe <span className="text-red-500">*</span>
+                                                                </Label>
+                                                                <Select options={additional}  onChange={handleChange} />
+
+                                                            </div>
+
+                                                            <div className="col-span-6 sm:col-span-3">
+                                                                    
+                                                                <Label htmlFor="amount" className="block text-sm font-medium text-gray-700">
+                                                                    Montant de l'inscription <span className="text-red-500">*</span>
+                                                                </Label>
+                                                                
+                                                                <Input
+                                                                    required
+                                                                    type="number"
+                                                                    name="amount"
+                                                                    id="amount"
+                                                                    onChange={(e) => setAmount(e.target.value)}
+                                                                />
+
+                                                            </div>
+
+                                                        </div>
+                                                    
+                                                    </fieldset>
                                                 </div>
-                                            </div>
+                                            ))}
+
+                                            {type !== "students" && ((
+                                                <div className="mt-2 pt-3">
+                                                    <div>
+                                                        <Label htmlFor="description">Description </Label>
+                                                        <Textarea
+                                                            id="description"
+                                                            value={description}
+                                                            className="block mt-1 w-full"
+                                                            onChange={e => setDescription(e.target.value)}
+                                                        />
+                                                    </div>
+                                                </div>
+                                            ))}
 
                                             <div className="my-5 sm:flex sm:flex-row justify-between">
                                                 <Button

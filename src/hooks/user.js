@@ -224,19 +224,12 @@ export const useUser = ({ middleware  } = {}) => {
         setPending(false) 
     }
 
-    const showStudent = async ({ slug, setStudent, setLoading, setClassrooms, setDefaultValue }) => {
+    const show = async ({ id, setStudent, setLoading, type }) => {
 
         await csrf()
-        
-        axios.get('/api/v1/students/'+ slug)
+        axios.get(`/api/v1/${type}/${id}`)
          .then(res => {
             setStudent(res.data.student)
-            setClassrooms(res.data.classrooms.original)
-            let defaultOption = { 
-                value: res.data.student.classrooms[0].id, 
-                label: res.data.student.classrooms[0].name
-            }
-            setDefaultValue(defaultOption)
         })
 
         setLoading(false)
@@ -677,11 +670,24 @@ export const useUser = ({ middleware  } = {}) => {
             .then((res) => {
 
                 toast('Operation effectuée avec succés.')
-                setName('')
-                setDescription('')
+                setName && setName('')
+                setDescription && setDescription('')
                 setCoeff && setCoeff('')
-
+                props.setLname && props.setName('')
+                props.setFname && props.setFname('')
+                props.setSexe && props.setSexe('M')
+                props.setBornPlace && props.setBornPlace('')
+                props.setBornAt && props.setBornAt('')
+                props.setFatherName && props.setFatherName('')
+                props.setMotherName && props.setMotherName('')
+                props.setFphone && props.setFphone('')
+                props.setMphone && props.setMphone('')
+                props.setQuarter && props.setQuarter('')
+                props.setComming && props.setComming('')
+                props.setAllergy && props.setAllergy('')
+                props.setAmount && props.setAmount('')
                 const d = new Date()
+                const data = res.data.data
 
                 if(additional) {
                     
@@ -690,7 +696,7 @@ export const useUser = ({ middleware  } = {}) => {
                         const item = additional.find(group => group.value == props.unit_id)
                         
                         const newItem = {
-                            id: res.data.id,
+                            id: data.id,
                             name: props.name,
                             coeff: props.coeff,
                             group: item,
@@ -706,7 +712,7 @@ export const useUser = ({ middleware  } = {}) => {
                         const item = additional.find(group => group.value == props.section_id)
 
                         const newItem = {
-                            id: res.data.id,
+                            id: data.id,
                             name: props.name,
                             fees: props.fees,
                             group: item,
@@ -723,7 +729,7 @@ export const useUser = ({ middleware  } = {}) => {
                         const search = other.find(el => el.value == props.building_id)
 
                         const newItem = {
-                            id: res.data.id,
+                            id: data.id,
                             name: props.name,
                             group: item,
                             building: search,
@@ -735,6 +741,24 @@ export const useUser = ({ middleware  } = {}) => {
                             newItem,
                             ...state
                         ])
+                        
+                    } else if(type === "students") { 
+
+                        const newItem = {
+                            id: data.id,
+                            matricule: data.matricule,
+                            fname: props.fname,
+                            lname: props.lname,
+                            sexe: props.sexe,
+                            comming: props.comming,
+                            created_at: d.getFullYear() + '-' + parseInt(d.getMonth() + 1) + '-'+ d.getDate()
+                        }
+
+                        setState([
+                            newItem,
+                            ...state
+                        ])
+
                     } else {
 
                         const item = additional.find(group => group.value == props.group_id)
@@ -781,7 +805,7 @@ export const useUser = ({ middleware  } = {}) => {
         updateAcademy,
         getStudents,
         addStudent,
-        showStudent,
+        show,
         updateStudent,
         list,
         showCourse,

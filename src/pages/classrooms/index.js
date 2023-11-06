@@ -39,10 +39,6 @@ const Classroom = () => {
     const [description, setDescription] = useState('')
     const [filterText, setFilterText] = useState('')
     const [resetPaginationToggle, setResetPaginationToggle] = useState(false)
-   /*  const [groupValue, setGroupValue] = useState({value: '', label: ''})
-    const [buildingValue, setBuildingValue] = useState({value: '', label: ''})
-    const [updateName, setUpdateName] = useState('')
-    const [updateDescription, setUpdateDescription] = useState('') */
     const [id, setId] = useState('')
     const [selectedRows, setSelectedRows] = useState(false)
     const [group_id, setGroup_id] = useState('')
@@ -91,11 +87,6 @@ const Classroom = () => {
         setGroup_id(group.value)
         setBuilding_id(building.value)
         setSelectedOther(building)
-        //setErrors([])
-        /* const findGroup = groups.find(item => item.id == group_id)
-        setGroupValue({ value: findGroup.id, label: findGroup.name })
-        const findBuilding = buildings.find(item => item.id == building_id)
-        setBuildingValue({ value: findBuilding.id, label: findBuilding.name }) */
     }
 
     const columns = [

@@ -3,16 +3,17 @@ import Head from 'next/head'
 import { useUser } from '@/hooks/user'
 import DataTable from 'react-data-table-component'
 import  FilterComponent  from '@/components/FilterComponent'
-import { useState, useEffect, useMemo } from "react"
+import { useState, useEffect, useMemo, useCallback, useRef } from "react"
 import { FaInfoCircle, FaEdit, FaMoneyBill } from 'react-icons/fa'
 import { BsSignpostSplitFill } from 'react-icons/bs'
 import TitleComponent from '@/components/TitleComponent'
-import ModalStudent from '@/components/ModalStudent'
+import ModalSection from '@/components/ModalSection'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import Link from 'next/link'
 import ModalPay from '@/components/ModalPay'
 import ModalExtended from '@/components/ModalExtended'
+import Button from '@/components/Button'
 
 const customStyles = {
    
@@ -24,37 +25,91 @@ const customStyles = {
    
 };
 
+const type = "students"
 
 const Student = () => {
 
-    const [students, setStudents] = useState([])
-    const [student_id, setStudent_id] = useState('')
-    const [classrooms, setClassrooms] = useState([])
-    const [showModal, setShowModal] = useState(false)
-    const [showModalPay, setShowModalPay] = useState(false)
-    const [showModalMoratoire, setShowModalMoratoire] = useState(false)
-    const [filterText, setFilterText] = useState('')
+    const [state, setState] = useState([])
+    const [additionals, setAdditionals] = useState([])
     const [pending, setPending] = useState(true)
-    const [fullName, setFullName] = useState('')
+    const [loading, setLoading] = useState(false)
+    const [showModal, setShowModal] = useState(false)
+    const [update, setUpdate] = useState(false)
+    const [lname, setLname] = useState('')
+    const [fname, setFname] = useState('')
+    const [sexe, setSexe] = useState('M')
+    const [born_place, setBornPlace] = useState('')
+    const [born_at, setBornAt] = useState('')
+    const [father_name, setFatherName] = useState('')
+    const [mother_name, setMotherName] = useState('')
+    const [fphone, setFphone] = useState('')
+    const [mphone, setMphone] = useState('')
+    const [quarter, setQuarter] = useState('')
+    const [comming, setComming] = useState('')
+    const [allergy, setAllergy] = useState('')
+    const [amount, setAmount] = useState('')
+    const [filterText, setFilterText] = useState('')
     const [resetPaginationToggle, setResetPaginationToggle] = useState(false)
+    const [id, setId] = useState('')
+    const [selectedRows, setSelectedRows] = useState(false)
+    const [classroom_id, setClassroom_id] = useState('')
+    const [selectedGroup, setSelectedGroup] = useState({})
+    const [toggleCleared, setToggleCleared] = useState(false)
+    const [waiting, setWaiting] = useState(false)
+    const [errors, setErrors] = useState([])
 
-    const filteredItems = students.filter(
+    const ref = useRef(null);
+
+    const filteredItems = state.filter(
 		item => item.fname && item.fname.toLowerCase().includes(filterText.toLowerCase()),
 	)
 
-    const { getStudents, addStudent, getClassroom } = useUser({
+    const { list, add, edit, remove } = useUser({
         middleware: 'auth',
     })
 
     useEffect(() => { 
 
-        getStudents({ setStudents, setPending })
+        list({ setState, setPending, setAdditionals, type })
 
-        getClassroom({ setClassrooms })
+        const handleClick = () => {
+           setUpdate(false)
+        };
+
+        const element = ref.current;
+
+        element.addEventListener('click', handleClick);
+
+        return () => {
+            element.removeEventListener('click', handleClick);
+        };
 
     },[])
 
+    const showModalUpdate = (id, name, surname, sexe, bornAt, bornPlace, comeFrom, allergy, qter, Mname, Fname, Fphone, Mphone) => {
+        setUpdate(true)
+        setShowModal(true)
+        setLname(name)
+        setFname(surname)
+        setSexe(sexe)
+        setQuarter(qter)
+        setMotherName(Mname)
+        setFatherName(Fname)
+        setFphone(Fphone)
+        setMphone(Mphone)
+        setAllergy(allergy)
+        setBornAt(bornAt)
+        setBornPlace(bornPlace)
+        setComming(comeFrom)
+        setId(id)
+    }
+
     const columns = [
+        {
+            name: 'Matricule',
+            selector: row => row.matricule,
+            sortable: true,
+        },
         {
             name: 'Nom',
             selector: row => row.fname,
@@ -66,6 +121,11 @@ const Student = () => {
             sortable: true,
         },
         {
+            name: 'Etablissement de Provenance',
+            selector: row => row.comming,
+            sortable: true,
+        },
+        {
             name: 'sexe',
             selector: row => row.sexe,
             sortable: true,
@@ -74,10 +134,10 @@ const Student = () => {
             name: 'Operations',
             selector: row => 
                 <div className="flex flex-row"> 
-                    <Link href={"students/"+row.slug}><a><FaEdit className="cursor-pointer mr-2" size={25} /></a></Link>
+                    <Link href={"students/"+row.id}><a target="_blank"><FaEdit className="cursor-pointer mr-2" size={25} onClick={() => showModalUpdate(row.id, row.fname, row.lname, row.sexe, row.born_at, row.born_place, row.comming, row.allergy, row.quarter, row.mother_name, row.father_name, row.fphone, row.mphone)} /></a></Link>
                     <FaMoneyBill className="cursor-pointer mr-2" onClick={() => showPaiment(row.id)} size={30} />
                     <BsSignpostSplitFill className="cursor-pointer mr-2" onClick={() => showMoratoire(row.id, row.lname, row.fname)} size={25} />
-                    <Link href={"details/"+row.slug}><a><FaInfoCircle className="cursor-pointer mr-2" size={25} /></a></Link>
+                    <Link href={"students/"+row.id}><a target="_blank"><FaInfoCircle className="cursor-pointer mr-2" size={25} /></a></Link>
                 </div>
         }
     ];
@@ -95,38 +155,46 @@ const Student = () => {
         );
 	}, [filterText, resetPaginationToggle]);
 
-    const showPaiment = (id) => {
-        setStudent_id(id)
-        setShowModalPay(true)
-    }
+    const handleRowSelected = useCallback(state => {
+		setSelectedRows(state.selectedRows);
+	}, []);
 
-    const showMoratoire = (id, name, surname) => {
-        const full_name = surname + ' ' + name
-        setStudent_id(id)
-        setFullName(full_name)
-        setShowModalMoratoire(true)
-    }
+    const contextActions = useMemo(() => {
+		const handleDelete = () => {
+			
+			if (window.confirm(`Are you sure you want to deleted:\r ${selectedRows.map(r => r.title)}?`)) {
+				setToggleCleared(!toggleCleared);
+                let ids = "";
+                selectedRows.forEach((item, index) => {
+                    if(index == (selectedRows.length - 1)) ids += item.id
+                    else ids += item.id + ';'
+                })
+                remove({ setErrors, setWaiting, ids, state, setState, type })
+			}
+		};
 
-    const showUserDetails = (id, name, surname) => {
-
-    }
+		return (
+			<Button disabled={waiting} key="delete" onClick={handleDelete} style={{ backgroundColor: 'red' }}>
+				{ waiting ? 'Suppression...' : 'Supprimer' }
+			</Button>
+		);
+	}, [state, selectedRows, toggleCleared]);
 
     return (
 
         <AppLayout>
 
             <Head>
-                <title>Scolarships - Eleves</title>
+                <title>Scolarships - Apprenants</title>
             </Head>
 
-            <div className="py-12">
+            <div className="py-12" ref={ref}>
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                    <div className="overflow-hidden shadow-sm sm:rounded-lg">
+                    <div className="overflow-hidden shadow-sm sm:rounded-lg px-10">
                         <div className="py-6 border-b border-gray-200">
 
-
                             <DataTable
-                                title={<TitleComponent title="Elèves" setShowModal={setShowModal} />}
+                                title={<TitleComponent title="Apprenants" setShowModal={setShowModal} />}
                                 columns={columns}
                                 data={filteredItems}
                                 pagination
@@ -136,6 +204,11 @@ const Student = () => {
                                 persistTableHead
                                 progressPending={pending}
                                 customStyles={customStyles}
+                                selectableRows
+                                contextActions={contextActions}
+                                selectedRows={selectedRows}
+                                clearSelectedRows={toggleCleared}
+                                onSelectedRowsChange={handleRowSelected}
                             />
 
                         </div>
@@ -145,16 +218,54 @@ const Student = () => {
 
             <ToastContainer />
 
-            <ModalStudent 
+            <ModalSection 
                 open={showModal} 
                 setOpen={setShowModal} 
-                title="Nouvel Eléve"
-                classrooms={classrooms}
-                setStudents={setStudents}
+                title="Liste Apprenants"
+                loading={loading}
+                setLoading={setLoading}
+                state={state}
                 setPending={setPending}
+                update={update}
+                setState={setState}
+                lname={lname}
+                setLname={setLname}
+                fname={fname}
+                setFname={setFname}
+                sexe={sexe}
+                setSexe={setSexe}
+                born_place={born_place}
+                setBornPlace={setBornPlace}
+                born_at={born_at}
+                setBornAt={setBornAt}
+                father_name={father_name}
+                setFatherName={setFatherName}
+                mother_name={mother_name}
+                setMotherName={setMotherName}
+                fphone={fphone}
+                setFphone={setFphone}
+                mphone={mphone}
+                setMphone={setMphone}
+                quarter={quarter}
+                amount={amount}
+                setQuarter={setQuarter}
+                comming={comming}
+                setComming={setComming}
+                allergy={allergy}
+                setAllergy={setAllergy}
+                setAmount={setAmount}
+                id={id}
+                save={add}
+                edit={edit}
+                additional={additionals}
+                classroom_id={classroom_id}
+                setClassroom_id={setClassroom_id}
+                selectedGroup={selectedGroup}
+                setSelectedGroup={setSelectedGroup}
+                type={type}
             />
 
-            <ModalPay 
+            {/* <ModalPay 
                 open={showModalPay} 
                 setOpen={setShowModalPay} 
                 title="Nouveau paiement"
@@ -167,7 +278,7 @@ const Student = () => {
                 title="Nouveau moratoire"
                 student_id={student_id}
                 name={fullName}
-            />
+            /> */}
 
         </AppLayout>
     )

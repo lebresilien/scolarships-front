@@ -168,7 +168,7 @@ const Group = () => {
 
             <div className="py-12" ref={ref}>
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                    <div className="overflow-hidden shadow-sm sm:rounded-lg">
+                    <div className="overflow-hidden shadow-sm sm:rounded-lg px-10">
                         <div className="py-6 border-b border-gray-200">
 
                             <AuthValidationErrors className="mb-4 mt-5" errors={errors} />
