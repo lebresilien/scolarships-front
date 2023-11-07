@@ -224,12 +224,15 @@ export const useUser = ({ middleware  } = {}) => {
         setPending(false) 
     }
 
-    const show = async ({ id, setStudent, setLoading, type }) => {
-
+    const show = async ({ id, setValue, setLoading, type, setErrors }) => {
+       
         await csrf()
         axios.get(`/api/v1/${type}/${id}`)
          .then(res => {
-            setStudent(res.data.student)
+            setValue(res.data.data)
+        })
+        .catch(error => {
+            setErrors(Object.values(error.response.data.errors).flat())
         })
 
         setLoading(false)
@@ -371,6 +374,7 @@ export const useUser = ({ middleware  } = {}) => {
         axios
             .put('/api/v1/'+type+'/'+id, props)
             .then(() => {
+                
                 toast(type + ' modifiée avec succés.')
                 
                 if(additional) {

@@ -22,9 +22,9 @@ const customStyles = {
    
 };
 
-const type = "students"
+const type = "policies"
 
-const Student = () => {
+const Policy = () => {
 
     const [state, setState] = useState([])
     const [additionals, setAdditionals] = useState([])
@@ -34,17 +34,6 @@ const Student = () => {
     const [update, setUpdate] = useState(false)
     const [lname, setLname] = useState('')
     const [fname, setFname] = useState('')
-    const [sexe, setSexe] = useState('M')
-    const [born_place, setBornPlace] = useState('')
-    const [born_at, setBornAt] = useState('')
-    const [father_name, setFatherName] = useState('')
-    const [mother_name, setMotherName] = useState('')
-    const [fphone, setFphone] = useState('')
-    const [mphone, setMphone] = useState('')
-    const [quarter, setQuarter] = useState('')
-    const [comming, setComming] = useState('')
-    const [allergy, setAllergy] = useState('')
-    const [amount, setAmount] = useState('')
     const [filterText, setFilterText] = useState('')
     const [resetPaginationToggle, setResetPaginationToggle] = useState(false)
     const [id, setId] = useState('')
@@ -58,10 +47,10 @@ const Student = () => {
     const ref = useRef(null);
 
     const filteredItems = state.filter(
-		item => item.fname && item.fname.toLowerCase().includes(filterText.toLowerCase()),
+		item => item.name && item.name.toLowerCase().includes(filterText.toLowerCase()),
 	)
 
-    const { list, add, edit, remove } = useUser({
+    const { list, remove } = useUser({
         middleware: 'auth',
     })
 
@@ -83,21 +72,13 @@ const Student = () => {
 
     },[])
 
-    const showModalUpdate = (id, name, surname, sex, bornAt, bornPlace, comeFrom, allergy, qter, Mname, Fname, Fphone, Mphone) => {
+    const showModalUpdate = (id, name, surname, sex) => {
         setUpdate(true)
         setShowModal(true)
         setLname(name)
         setFname(surname)
         setSexe(sex)
         setQuarter(qter)
-        setMotherName(Mname)
-        setFatherName(Fname)
-        setFphone(Fphone)
-        setMphone(Mphone)
-        setAllergy(allergy)
-        setBornAt(bornAt)
-        setBornPlace(bornPlace)
-        setComming(comeFrom)
         setId(id)
     }
 
@@ -109,32 +90,30 @@ const Student = () => {
         },
         {
             name: 'Nom',
-            selector: row => row.fname,
+            selector: row => row.name,
             sortable: true,
         },
         {
-            name: 'Prenom',
-            selector: row => row.lname,
+            name: 'Classe',
+            selector: row => row.cname,
             sortable: true,
         },
         {
-            name: 'Etablissement de Provenance',
-            selector: row => row.comming,
+            name: 'Montant Versé',
+            selector: row => row.amount,
             sortable: true,
         },
         {
-            name: 'sexe',
-            selector: row => row.sexe,
+            name: 'Année Academique',
+            selector: row => row.academy_name,
             sortable: true,
         },
         {
             name: 'Operations',
             selector: row => 
                 <div className="flex flex-row"> 
-                    <FaEdit className="cursor-pointer mr-2" size={25} onClick={() => showModalUpdate(row.id, row.fname, row.lname, row.sexe, row.born_at, row.born_place, row.comming, row.allergy, row.quarter, row.mother_name, row.father_name, row.fphone, row.mphone)} />
-                    {/* <FaMoneyBill className="cursor-pointer mr-2" onClick={() => showPaiment(row.id)} size={30} />
-                    <BsSignpostSplitFill className="cursor-pointer mr-2" onClick={() => showMoratoire(row.id, row.lname, row.fname)} size={25} /> */}
-                    <Link href={"students/"+row.id}><a target="_blank"><FaInfoCircle className="cursor-pointer mr-2" size={25} /></a></Link>
+                    <FaEdit className="cursor-pointer mr-2" size={25} onClick={() => showModalUpdate(row.policy_id, row.name, row.status, row.cname, row.group)} />
+                    <Link href={"policies/"+row.policy_id}><a target="_blank"><FaInfoCircle className="cursor-pointer mr-2" size={25} /></a></Link>
                 </div>
         }
     ];
@@ -166,7 +145,7 @@ const Student = () => {
                     if(index == (selectedRows.length - 1)) ids += item.id
                     else ids += item.id + ';'
                 })
-                remove({ setErrors, setWaiting, ids, state, setState, type })
+                //remove({ setErrors, setWaiting, ids, state, setState, type })
 			}
 		};
 
@@ -182,7 +161,7 @@ const Student = () => {
         <AppLayout>
 
             <Head>
-                <title>Scolarships - Apprenants</title>
+                <title>Scolarships - Contrats</title>
             </Head>
 
             <div className="py-12" ref={ref}>
@@ -191,7 +170,7 @@ const Student = () => {
                         <div className="">
 
                             <DataTable
-                                title={<TitleComponent title="Apprenants" setAllergy={setAllergy} setComming={setComming} setAmount={setAmount} setQuarter={setQuarter} setBornAt={setBornAt} setBornPlace={setBornPlace} setSexe={setSexe} setLname={setLname} setFname={setFname} setMotherName={setMotherName} setMphone={setMphone} setFatherName={setFatherName} setFphone={setFphone} setShowModal={setShowModal} />}
+                                title={<TitleComponent title="Inscriptions" setShowModal={setShowModal} />}
                                 columns={columns}
                                 data={filteredItems}
                                 pagination
@@ -215,70 +194,8 @@ const Student = () => {
 
             <ToastContainer />
 
-            <ModalSection 
-                open={showModal} 
-                setOpen={setShowModal} 
-                title="Liste Apprenants"
-                loading={loading}
-                setLoading={setLoading}
-                state={state}
-                setPending={setPending}
-                update={update}
-                setState={setState}
-                lname={lname}
-                setLname={setLname}
-                fname={fname}
-                setFname={setFname}
-                sexe={sexe}
-                setSexe={setSexe}
-                born_place={born_place}
-                setBornPlace={setBornPlace}
-                born_at={born_at}
-                setBornAt={setBornAt}
-                father_name={father_name}
-                setFatherName={setFatherName}
-                mother_name={mother_name}
-                setMotherName={setMotherName}
-                fphone={fphone}
-                setFphone={setFphone}
-                mphone={mphone}
-                setMphone={setMphone}
-                quarter={quarter}
-                amount={amount}
-                setQuarter={setQuarter}
-                comming={comming}
-                setComming={setComming}
-                allergy={allergy}
-                setAllergy={setAllergy}
-                setAmount={setAmount}
-                id={id}
-                save={add}
-                edit={edit}
-                additional={additionals}
-                classroom_id={classroom_id}
-                setClassroom_id={setClassroom_id}
-                selectedGroup={selectedGroup}
-                setSelectedGroup={setSelectedGroup}
-                type={type}
-            />
-
-            {/* <ModalPay 
-                open={showModalPay} 
-                setOpen={setShowModalPay} 
-                title="Nouveau paiement"
-                student_id={student_id}
-            />
-
-            <ModalExtended
-                open={showModalMoratoire} 
-                setOpen={setShowModalMoratoire} 
-                title="Nouveau moratoire"
-                student_id={student_id}
-                name={fullName}
-            /> */}
-
         </AppLayout>
     )
 }
 
-export default Student
+export default Policy

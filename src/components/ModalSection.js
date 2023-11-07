@@ -331,6 +331,7 @@ const ModalSection = ({
                                                                     name="fname"
                                                                     id="first-name"
                                                                     autoComplete="given-name"
+                                                                    value={fname}
                                                                     onChange={(e) => setFname(e.target.value)}
                                                                 />
 
@@ -347,6 +348,7 @@ const ModalSection = ({
                                                                     name="lname"
                                                                     id="last-name"
                                                                     autoComplete="family-name"
+                                                                    value={lname}
                                                                     onChange={(e) => setLname(e.target.value)}
                                                                 />
                                                             </div>
@@ -362,6 +364,7 @@ const ModalSection = ({
                                                                     type="date"
                                                                     name="born_at"
                                                                     id="bornAt"
+                                                                    value={born_at}
                                                                     onChange={(e) => setBornAt(e.target.value)}
                                                                 />
                                                             </div>
@@ -377,7 +380,7 @@ const ModalSection = ({
                                                                     type="text"
                                                                     name="born_place"
                                                                     id="bornPlace"
-                                                                    autoComplete
+                                                                    value={born_place}
                                                                     onChange={(e) => setBornPlace(e.target.value)}
                                                                 />
                                                             </div>
@@ -394,9 +397,9 @@ const ModalSection = ({
                                                                             id="man-radio"
                                                                             name="sexe"
                                                                             type="radio"
-                                                                            checked
-                                                                            value="M"
-                                                                            onClick={(e) => setSexe(e.target.value)}
+                                                                            checked={sexe === "M" ? true : false}
+                                                                            value={sexe}
+                                                                            onChange={() => setSexe('M')}
                                                                         />
                                                                         <Label htmlFor="man-radio" className="ml-2 block text-sm font-medium text-gray-700">
                                                                             Masculin
@@ -408,8 +411,9 @@ const ModalSection = ({
                                                                             id="woman-radio"
                                                                             name="sexe"
                                                                             type="radio"
-                                                                            value="F"
-                                                                            onClick={(e) => setSexe(e.target.value)}
+                                                                            checked={sexe === "F" ? true : false}
+                                                                            value={sexe}
+                                                                            onChange={() => setSexe('F')}
                                                                         />
                                                                         <Label htmlFor="woman-radio" className="ml-2 block text-sm font-medium text-gray-700">
                                                                             Feminin
@@ -429,6 +433,7 @@ const ModalSection = ({
                                                                     name="quarter"
                                                                     id="quarter"
                                                                     required
+                                                                    value={quarter}
                                                                     onChange={(e) => setQuarter(e.target.value)}
                                                                 />
                                                             </div>
@@ -457,6 +462,7 @@ const ModalSection = ({
                                                                     name="allergy"
                                                                     id="allergy"
                                                                     className="w-full"
+                                                                    value={allergy}
                                                                     onChange={(e) => setAllergy(e.target.value)}
                                                                 />
                                                             </div>
@@ -479,7 +485,7 @@ const ModalSection = ({
                                                                     type="text"
                                                                     name="father_name"
                                                                     id="fatherName"
-                                                                    autoComplete
+                                                                    value={father_name}
                                                                     onChange={(e) => setFatherName(e.target.value)}
                                                                 />
                                                             </div>
@@ -494,7 +500,7 @@ const ModalSection = ({
                                                                     type="text"
                                                                     name="fphone"
                                                                     id="fatherPhone"
-                                                                    autoComplete
+                                                                    value={fphone}
                                                                     onChange={(e) => setFphone(e.target.value)}
                                                                 />
                                                             </div>
@@ -510,7 +516,7 @@ const ModalSection = ({
                                                                     type="text"
                                                                     name="mother_name"
                                                                     id="motherName"
-                                                                    autoComplete
+                                                                    value={mother_name}
                                                                     onChange={(e) => setMotherName(e.target.value)}
                                                                 />
                                                             </div>
@@ -526,7 +532,7 @@ const ModalSection = ({
                                                                     type="text"
                                                                     name="mphone"
                                                                     id="motherPhone"
-                                                                    autoComplete
+                                                                    value={mphone}
                                                                     onChange={(e) => setMphone(e.target.value)}
                                                                 />
                                                             </div>
@@ -534,40 +540,42 @@ const ModalSection = ({
                                                         </div>
                                                     </fieldset>
 
-                                                    <fieldset className="px-2 my-3 border-2 border-gray-100">
-                                                        
-                                                        <legend className="text-medium font-medium text-gray-900">Informations relative à la salle de classe</legend>
-                                                        
-                                                        <div className="grid grid-cols-6 gap-6 my-3">
+                                                    {!update && ((
+                                                        <fieldset className="px-2 my-3 border-2 border-gray-100">
+                                                            
+                                                            <legend className="text-medium font-medium text-gray-900">Informations relative à la salle de classe</legend>
+                                                            
+                                                            <div className="grid grid-cols-6 gap-6 my-3">
 
-                                                            <div className="col-span-6 sm:col-span-3">
+                                                                <div className="col-span-6 sm:col-span-3">
 
-                                                                <Label htmlFor="classroom" className="block text-sm font-medium text-gray-700">
-                                                                    Selectionner la salle de classe <span className="text-red-500">*</span>
-                                                                </Label>
-                                                                <Select options={additional}  onChange={handleChange} />
+                                                                    <Label htmlFor="classroom" className="block text-sm font-medium text-gray-700">
+                                                                        Selectionner la salle de classe <span className="text-red-500">*</span>
+                                                                    </Label>
+                                                                    <Select options={additional}  onChange={handleChange} />
 
-                                                            </div>
+                                                                </div>
 
-                                                            <div className="col-span-6 sm:col-span-3">
+                                                                <div className="col-span-6 sm:col-span-3">
+                                                                        
+                                                                    <Label htmlFor="amount" className="block text-sm font-medium text-gray-700">
+                                                                        Montant de l'inscription <span className="text-red-500">*</span>
+                                                                    </Label>
                                                                     
-                                                                <Label htmlFor="amount" className="block text-sm font-medium text-gray-700">
-                                                                    Montant de l'inscription <span className="text-red-500">*</span>
-                                                                </Label>
-                                                                
-                                                                <Input
-                                                                    required
-                                                                    type="number"
-                                                                    name="amount"
-                                                                    id="amount"
-                                                                    onChange={(e) => setAmount(e.target.value)}
-                                                                />
+                                                                    <Input
+                                                                        required
+                                                                        type="number"
+                                                                        name="amount"
+                                                                        id="amount"
+                                                                        onChange={(e) => setAmount(e.target.value)}
+                                                                    />
+
+                                                                </div>
 
                                                             </div>
-
-                                                        </div>
-                                                    
-                                                    </fieldset>
+                                                        
+                                                        </fieldset>
+                                                    ))}
                                                 </div>
                                             ))}
 
