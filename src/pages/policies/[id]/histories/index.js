@@ -4,13 +4,14 @@ import { useUser } from '@/hooks/user'
 import DataTable from 'react-data-table-component'
 import  FilterComponent  from '@/components/FilterComponent'
 import { useState, useEffect, useMemo, useCallback, useRef } from "react"
-import { FaInfoCircle, FaEdit } from 'react-icons/fa'
+import { FaEdit } from 'react-icons/fa'
 import TitleComponent from '@/components/TitleComponent'
-import ModalSection from '@/components/ModalSection'
+import ModalPay from '@/components/ModalPay'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
-import Link from 'next/link'
 import Button from '@/components/Button'
+import { useRouter } from 'next/router'
+import { toast } from 'react-toastify';
 
 const customStyles = {
    
@@ -22,24 +23,22 @@ const customStyles = {
    
 };
 
-const type = "policies"
+const type = 'transactions'
 
-const Policy = () => {
+const Student = () => {
 
     const [state, setState] = useState([])
-    const [additionals, setAdditionals] = useState([])
     const [pending, setPending] = useState(true)
     const [loading, setLoading] = useState(false)
     const [showModal, setShowModal] = useState(false)
     const [update, setUpdate] = useState(false)
     const [name, setName] = useState('')
-    const [fname, setFname] = useState('')
+    const [amount, setAmount] = useState('')
+    const [surname, setSurname] = useState('')
+    const [slug, setId] = useState('')
     const [filterText, setFilterText] = useState('')
     const [resetPaginationToggle, setResetPaginationToggle] = useState(false)
-    const [id, setId] = useState('')
     const [selectedRows, setSelectedRows] = useState(false)
-    const [classroom_id, setClassroom_id] = useState('')
-    const [selectedGroup, setSelectedGroup] = useState({})
     const [toggleCleared, setToggleCleared] = useState(false)
     const [waiting, setWaiting] = useState(false)
     const [errors, setErrors] = useState([])
@@ -47,17 +46,27 @@ const Policy = () => {
     const ref = useRef(null);
 
     const filteredItems = state.filter(
-		item => item.name && item.name.toLowerCase().includes(filterText.toLowerCase()),
+		item => item.title && item.title.toLowerCase().includes(filterText.toLowerCase()),
 	)
 
-    const { list, remove } = useUser({
+    const router = useRouter()
+    const { id } = router.query;
+
+    const { index, create, edit, remove } = useUser({
         middleware: 'auth',
     })
 
     useEffect(() => { 
 
-        list({ setState, setPending, setAdditionals, type })
-
+        id && ((
+            index('/api/v1/transactions/history/'+id)
+            .then(res => {
+                setPending(false)
+                setState(res.data.state)
+                res.data.state.length > 0 &&  setSurname(res.data.state[0].name)
+            })
+        ))
+        
         const handleClick = () => {
            setUpdate(false)
         };
@@ -70,54 +79,43 @@ const Policy = () => {
             element.removeEventListener('click', handleClick);
         };
 
-    },[])
+    }, [id])
 
-    const showModalUpdate = (id, name, sex, group) => {
+    const showModalUpdate = (id, amount, title, name) => {
         setUpdate(true)
         setShowModal(true)
-        setName(name)
-        setSexe(sex)
-        setSelectedGroup(group)
         setId(id)
+        setAmount(amount)
+        setName(title)
+        setSurname(name)
     }
 
     const columns = [
         {
-            name: 'Matricule',
-            selector: row => row.matricule,
+            name: 'Libellé',
+            selector: row => row.title,
             sortable: true,
         },
         {
-            name: 'Nom',
+            name: 'Montant',
+            selector: row => row.amount + 'FCFA',
+            sortable: true,
+        },
+        {
+            name: 'Date',
+            selector: row => row.created_at,
+            sortable: true,
+        },
+        {
+            name: 'Noms & Prénoms',
             selector: row => row.name,
-            sortable: true,
-        },
-        {
-            name: 'Classe',
-            selector: row => row.cname,
-            sortable: true,
-        },
-        {
-            name: 'Montant Versé',
-            selector: row => row.amount,
-            sortable: true,
-        },
-        {
-            name: 'Année Academique',
-            selector: row => row.academy_name,
-            sortable: true,
-        },
-{
-            name: 'Status',
-            selector: row => row.status ? <span className="text-green-500 font-bold">Actif</span> : <span className="text-red-500 font-bold">Démissionaire</span> ,
             sortable: true,
         },
         {
             name: 'Operations',
             selector: row => 
                 <div className="flex flex-row"> 
-                    <FaEdit className="cursor-pointer mr-2" size={25} onClick={() => showModalUpdate(row.policy_id, row.name, row.status, row.cname, row.group)} />
-                    <Link href={`${type}/${row.policy_id}/histories`}><a target="_blank"><FaInfoCircle className="cursor-pointer mr-2" size={25} /></a></Link>
+                    <FaEdit className="cursor-pointer mr-2" size={25} onClick={() => showModalUpdate(row.id, row.amount, row.title, row.name)} />
                 </div>
         }
     ];
@@ -149,7 +147,7 @@ const Policy = () => {
                     if(index == (selectedRows.length - 1)) ids += item.id
                     else ids += item.id + ';'
                 })
-                //remove({ setErrors, setWaiting, ids, state, setState, type })
+                remove({ setErrors, setWaiting, ids, state, setState, type })
 			}
 		};
 
@@ -160,21 +158,46 @@ const Policy = () => {
 		);
 	}, [state, selectedRows, toggleCleared]);
 
+    const save = () => {
+
+        setLoading(true);
+
+        const data = {
+            name: name,
+            amount: amount,
+            inscription_id: id
+        }
+
+        create('/api/v1/transactions', data)
+        .then((response) => {
+            setLoading(false);
+            setState([
+                response.data.data,
+                ...state
+            ])
+            toast('Ajout réussi')
+            setShowModal(false)
+        })
+        .catch(error => {
+            setErrors(Object.values(error.response.data.errors).flat())
+        })
+    }
+
     return (
 
         <AppLayout>
 
             <Head>
-                <title>Scolarships - Contrats</title>
+                <title>Scolarships - Historique de Transactions</title>
             </Head>
 
             <div className="py-12" ref={ref}>
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                    <div className="overflow-hidden shadow-sm sm:rounded-lg px-10">
+                    <div className="overflow-hidden sm:rounded-lg px-10">
                         <div className="">
 
                             <DataTable
-                                title={<TitleComponent title="Inscriptions" setShowModal={setShowModal} />}
+                                title={<TitleComponent title="Historique de transactions" setAmount={setAmount} setName={setName} setSurname={setSurname} setShowModal={setShowModal} surname={surname} />}
                                 columns={columns}
                                 data={filteredItems}
                                 pagination
@@ -198,8 +221,30 @@ const Policy = () => {
 
             <ToastContainer />
 
+            <ModalPay 
+                open={showModal} 
+                setOpen={setShowModal} 
+                title="Historique de transactions"
+                loading={loading}
+                setLoading={setLoading}
+                state={state}
+                setPending={setPending}
+                update={update}
+                setState={setState}
+                name={name}
+                setName={setName}
+                amount={amount}
+                setAmount={setAmount}
+                surname={surname}
+                id={slug}
+                errors={errors}
+                setErrors={setErrors}
+                save={save}
+                edit={edit}
+            />
+
         </AppLayout>
     )
 }
 
-export default Policy
+export default Student

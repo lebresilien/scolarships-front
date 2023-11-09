@@ -26,7 +26,9 @@ const TitleComponent = ({
     setQuarter,
     setComming,
     setAllergy,
-    setAmount
+    setAmount,
+    setSurname,
+    surname
 }) => {
      
     const show = () => {
@@ -50,6 +52,7 @@ const TitleComponent = ({
         setComming && setComming('')
         setAllergy && setAllergy('')
         setAmount && setAmount('')
+        setSurname && setSurname(surname)
     }
     
     return (

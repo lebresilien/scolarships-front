@@ -326,6 +326,16 @@ export const useUser = ({ middleware  } = {}) => {
         setPending(false) 
     }
 
+    const index = async (url) => {
+        await csrf()
+        return axios.get(url)
+    }
+
+    const create = async (url, data) => {
+        await csrf()
+        return axios.post(url, data)
+    }
+
     const getClassroom = async ({ setClassrooms, setClassroomValue }) => {
         await csrf()
         
@@ -832,6 +842,8 @@ export const useUser = ({ middleware  } = {}) => {
         showBuilding,
         add,
         remove,
-        getClassroom
+        getClassroom,
+        index,
+        create
     }
 }

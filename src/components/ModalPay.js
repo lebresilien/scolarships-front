@@ -1,28 +1,18 @@
 import Button from './Button'
 import Label from './Label'
 import Input from './Input'
-import { Fragment, useState } from 'react'
+import { Fragment, } from 'react'
 import AuthValidationErrors from '@/components/AuthValidationErrors'
-import { useUser } from '@/hooks/user'
 import { Dialog, Transition } from '@headlessui/react'
 
-function ModalPay ({ open, setOpen, title, student_id }) {
+function ModalPay ({ open, setOpen, title, name, surname, setName, amount, setAmount, loading, errors, save}) {
 
-    const [loading, setLoading] = useState(false)
-    const [errors, setErrors] = useState([])
-    const [name, setName] = useState()
-    const [amount, setAmount] = useState('')
 
-    const { addTransaction } = useUser({
-        middleware: 'auth',
-    })
-
-   
     const submitForm = (e) => {
        
         e.preventDefault();
 
-        addTransaction({ name, amount, student_id, setLoading, setOpen, setErrors, setName,setAmount})
+        save()
     }
 
     return (
@@ -71,13 +61,26 @@ function ModalPay ({ open, setOpen, title, student_id }) {
                                     
                                     <div className="my-3">
 
-                                        <form onSubmit={submitForm} className="px-5">
-
-                                            <div className="">
+                                        <div className="">
                                                 <AuthValidationErrors className="mb-4 mt-5" errors={errors} />
+                                        </div>
+
+                                        <form onSubmit={submitForm} className="px-5"> 
+
+                                            <div className='mb-3'>
+                                                <div>
+                                                    <Label htmlFor="surnname">Noms && Prénoms </Label>
+                                                    <Input
+                                                        disabled={true}
+                                                        id="surname"
+                                                        type="text"
+                                                        value={surname}
+                                                        className="block mt-1 w-full bg-gray-50"
+                                                    />
+                                                </div>
                                             </div>
 
-                                            <div>
+                                            <div className='mb-3'>
                                                 <div>
                                                     <Label htmlFor="name">Libellé </Label>
                                                     <Input
@@ -92,7 +95,7 @@ function ModalPay ({ open, setOpen, title, student_id }) {
                                                 </div>
                                             </div>
 
-                                            <div className="mt-3">
+                                            <div className="mb-3">
                                                 <div>
                                                     <Label htmlFor="amount">Montant </Label>
                                                     <Input
@@ -102,13 +105,22 @@ function ModalPay ({ open, setOpen, title, student_id }) {
                                                         className="block mt-1 w-full bg-gray-50"
                                                         onChange={event => setAmount(event.target.value)}
                                                         required
-                                                        autoFocus
                                                     />
                                                 </div>
                                             </div>
 
-                                            <div className="pt-5 sm:px-1 sm:flex sm:flex-row justify-end">
+                                            <div className="my-5 sm:flex sm:flex-row justify-between">
                                            
+                                                <Button 
+                                                    type="button"
+                                                    passed
+                                                    className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:w-auto sm:text-sm"
+                                                    onClick={() => setOpen(false)}
+                                                    cancel="true"
+                                                >
+                                                    Annuler
+                                                </Button>
+
                                                <Button
                                                     type="submit"
                                                     className="" 
