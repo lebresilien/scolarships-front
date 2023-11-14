@@ -81,9 +81,13 @@ const TitleComponent = ({
 
                 </form> :
 
-                <Button type="button" className="text-xs" onClick={show} >
-                    + Ajouter
-                </Button>
+                <div>
+                    {setShowModal && ((
+                        <Button type="button" className="text-xs" onClick={show} >
+                            + Ajouter
+                        </Button>
+                    ))}
+                </div>
             }
         
         </div>

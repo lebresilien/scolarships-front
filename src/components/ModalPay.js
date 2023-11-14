@@ -4,15 +4,57 @@ import Input from './Input'
 import { Fragment, } from 'react'
 import AuthValidationErrors from '@/components/AuthValidationErrors'
 import { Dialog, Transition } from '@headlessui/react'
+import Select from 'react-select'
 
-function ModalPay ({ open, setOpen, title, name, surname, setName, amount, setAmount, loading, errors, save}) {
+function ModalPay ({
+    setState,
+    state, 
+    open, 
+    setOpen, 
+    title,  
+    surname, 
+    setName,
+    name, 
+    setLoading,
+    amount, 
+    setAmount, 
+    loading, 
+    errors, 
+    save, 
+    update, 
+    edit, 
+    setErrors, 
+    type, 
+    id, 
+    selectedStatus, 
+    setClassroom_id, 
+    selectedGroup, 
+    setSelectedGroup, 
+    additional, 
+    options,
+    setStatus,
+    setSelectedStatus
+    }) {
 
 
     const submitForm = (e) => {
        
         e.preventDefault();
 
-        save()
+        {update ?
+            type === "transactions" ?  edit({setState, state, setErrors, setOpen, name, amount, type, setLoading, id}): edit() :
+            save()
+        }
+    }
+    
+    const handleChange = (newValue) => {
+        setClassroom_id(newValue.value) 
+        setSelectedGroup && setSelectedGroup(newValue)
+    }
+
+    const handleChangeStatus = (newValue) => {
+        setStatus(newValue.value)
+        setSelectedStatus(newValue)
     }
 
     return (
@@ -21,7 +63,7 @@ function ModalPay ({ open, setOpen, title, name, surname, setName, amount, setAm
 
             <Dialog as="div" className="fixed z-10 inset-0 overflow-y-auto"  onClose={setOpen}>
 
-                <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+                <div className="flex items-end justify-center min-h-screen py-4 px-4 text-center sm:block sm:p-0">
                     
                     <Transition.Child
                         as={Fragment}
@@ -49,7 +91,7 @@ function ModalPay ({ open, setOpen, title, name, surname, setName, amount, setAm
                         leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
                     >
 
-                        <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+                        <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-3 sm:align-middle sm:max-w-lg sm:w-full">
                             
                             <Dialog.Title as="h3" className="text-center py-3 text-lg leading-6 font-medium text-gray-900 border-b-2">
                                     { title }
@@ -61,12 +103,12 @@ function ModalPay ({ open, setOpen, title, name, surname, setName, amount, setAm
                                     
                                     <div className="my-3">
 
-                                        <div className="">
+                                        <div className="flex flex-col items-center">
                                                 <AuthValidationErrors className="mb-4 mt-5" errors={errors} />
                                         </div>
 
                                         <form onSubmit={submitForm} className="px-5"> 
-
+                                            
                                             <div className='mb-3'>
                                                 <div>
                                                     <Label htmlFor="surnname">Noms && Prénoms </Label>
@@ -80,36 +122,86 @@ function ModalPay ({ open, setOpen, title, name, surname, setName, amount, setAm
                                                 </div>
                                             </div>
 
-                                            <div className='mb-3'>
+                                            {type == "transactions" && ((
                                                 <div>
-                                                    <Label htmlFor="name">Libellé </Label>
-                                                    <Input
-                                                        id="name"
-                                                        type="text"
-                                                        value={name}
-                                                        className="block mt-1 w-full bg-gray-50"
-                                                        onChange={event => setName(event.target.value)}
-                                                        required
-                                                        autoFocus
-                                                    />
-                                                </div>
-                                            </div>
+                                                    <div className='mb-3'>
+                                                        <div>
+                                                            <Label htmlFor="name">Libellé </Label>
+                                                            <Input
+                                                                id="name"
+                                                                type="text"
+                                                                value={name}
+                                                                className="block mt-1 w-full bg-gray-50"
+                                                                onChange={event => setName(event.target.value)}
+                                                                required
+                                                                autoFocus
+                                                            />
+                                                        </div>
+                                                    </div>
 
-                                            <div className="mb-3">
+                                                    <div className="mb-3">
+                                                        <div>
+                                                            <Label htmlFor="amount">Montant </Label>
+                                                            <Input
+                                                                id="amount"
+                                                                type="number"
+                                                                value={amount}
+                                                                className="block mt-1 w-full bg-gray-50"
+                                                                onChange={event => setAmount(event.target.value)}
+                                                                required
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            ))}
+
+                                            {type == "policies" && ((
                                                 <div>
-                                                    <Label htmlFor="amount">Montant </Label>
-                                                    <Input
-                                                        id="amount"
-                                                        type="number"
-                                                        value={amount}
-                                                        className="block mt-1 w-full bg-gray-50"
-                                                        onChange={event => setAmount(event.target.value)}
-                                                        required
-                                                    />
-                                                </div>
-                                            </div>
+                                                    <div className="mb-2">
+                                                        <Label htmlFor="description">Selectioner le groupe </Label>
+                                                        <div>
+                                                            <Select options={additional}  onChange={handleChange} value={selectedGroup} />
+                                                        </div>
+                                                    </div>
 
-                                            <div className="my-5 sm:flex sm:flex-row justify-between">
+                                                    <div className="mb-2">
+                                                        <Label htmlFor="description">Status </Label>
+                                                        <div>
+                                                            <Select options={options}  onChange={handleChangeStatus} value={selectedStatus} />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            ))}
+
+                                            {type == "policies/2" && ((
+                                                <div>
+                                                    
+                                                    <div className="mb-2">
+                                                        <Label htmlFor="description">Selectioner la salle de classe </Label>
+                                                        <div>
+                                                            <Select options={additional}  onChange={handleChange} />
+                                                        </div>
+                                                    </div>
+
+                                                    <div className="mb-3">
+                                                        <div>
+                                                            <Label htmlFor="amount">Montant </Label>
+                                                            <Input
+                                                                id="amount"
+                                                                type="number"
+                                                                value={amount}
+                                                                className="block mt-1 w-full bg-gray-50"
+                                                                onChange={event => setAmount(event.target.value)}
+                                                                required
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                   
+                                                </div>
+                                            ))}
+
+
+                                            <div className="my-3 sm:flex sm:flex-row justify-between">
                                            
                                                 <Button 
                                                     type="button"
@@ -121,13 +213,23 @@ function ModalPay ({ open, setOpen, title, name, surname, setName, amount, setAm
                                                     Annuler
                                                 </Button>
 
-                                               <Button
-                                                    type="submit"
-                                                    className="" 
-                                                    disabled={loading}  
-                                                >   
+                                                {update ? 
+                                                    <Button
+                                                        type="submit"
+                                                        className="" 
+                                                        disabled={loading}  
+                                                    >   
+                                                        { !loading ? 'Mettre à jour' : 'Mise à jour ...' }
+                                                    </Button>
+                                                    :
+                                                    <Button
+                                                        type="submit"
+                                                        className="" 
+                                                        disabled={loading}  
+                                                    >   
                                                         { !loading ? 'Enregistrez' : 'Enregistrement ...' }
-                                                </Button>
+                                                    </Button>
+                                                }
                                                 
                                             </div>
 

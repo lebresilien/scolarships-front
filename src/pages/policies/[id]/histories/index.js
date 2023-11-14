@@ -81,10 +81,10 @@ const Student = () => {
 
     }, [id])
 
-    const showModalUpdate = (id, amount, title, name) => {
+    const showModalUpdate = (slug, amount, title, name) => {
         setUpdate(true)
         setShowModal(true)
-        setId(id)
+        setId(slug)
         setAmount(amount)
         setName(title)
         setSurname(name)
@@ -98,11 +98,11 @@ const Student = () => {
         },
         {
             name: 'Montant',
-            selector: row => row.amount + 'FCFA',
+            selector: row => row.amount + ' FCFA',
             sortable: true,
         },
         {
-            name: 'Date',
+            name: 'Date de création',
             selector: row => row.created_at,
             sortable: true,
         },
@@ -241,6 +241,7 @@ const Student = () => {
                 setErrors={setErrors}
                 save={save}
                 edit={edit}
+                type={type}
             />
 
         </AppLayout>

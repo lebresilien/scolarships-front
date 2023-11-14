@@ -336,6 +336,11 @@ export const useUser = ({ middleware  } = {}) => {
         return axios.post(url, data)
     }
 
+    const change = async (url, id,  data) => {
+        await csrf()
+        return axios.put(`${url}/${id}`, data)
+    }
+
     const getClassroom = async ({ setClassrooms, setClassroomValue }) => {
         await csrf()
         
@@ -445,9 +450,10 @@ export const useUser = ({ middleware  } = {}) => {
                 } else {
                     const copySection = [...props.state]
                     const currentItem = copySection.find(item => item.id === id)
-                
-                    currentItem.name = props.name
-                    currentItem.description = props.description
+                    if(type !== "transactions") currentItem.name = props.name
+                    if(type === "transactions") currentItem.title = props.name
+                    if(props.amount) currentItem.amount = props.amount
+                    if(props.description) currentItem.description = props.description
                     setState(copySection)
                 }
              
@@ -844,6 +850,7 @@ export const useUser = ({ middleware  } = {}) => {
         remove,
         getClassroom,
         index,
-        create
+        create,
+        change
     }
 }
