@@ -1,5 +1,4 @@
 import axios from '@/lib/axios'
-import useSWR from 'swr'
 import { toast } from 'react-toastify';
 
 export const useUser = ({ middleware  } = {}) => {
@@ -107,30 +106,19 @@ export const useUser = ({ middleware  } = {}) => {
             setClassrooms(res.data)
             setPending && setPending(false)
          })
-            
+             
     }
 
-    const getPrimaryStatistics = async ({ setData }) => {
+    const getPrimaryStatistics = async ({ setData , setLoading}) => {
         await csrf()
-        
-        axios.get('/api/v1/primary-statistics')
-         .then(res => setData(res.data))
-            
+        axios.get('/api/v1/statistics')
+        .then(res => {
+            console.log('months-------', res.data.data.transactions.months)
+            setData(res.data.data)
+            setLoading(false)
+        })   
     }
 
-    const getClassroomsWithGroups = async ({ setClassrooms, setLoading, setUnits }) => {
-        setLoading(true)
-        await csrf()
-        
-        axios.get('/api/v1/groups_classrooms')
-            .then(res => {
-                setClassrooms(res.data.classrooms)
-                setUnits(res.data.units)
-            })
-
-        setLoading(false)
-            
-    }
 
     const addAcademy = async ({ setErrors, setLoading, setState, state, setActive, setName, ...props }) => {
 
@@ -820,7 +808,6 @@ export const useUser = ({ middleware  } = {}) => {
         sendInvitation,
         updateProfile,
         getPrimaryStatistics,
-        getClassroomsWithGroups,
         addAcademy,
         updateAcademy,
         getStudents,
