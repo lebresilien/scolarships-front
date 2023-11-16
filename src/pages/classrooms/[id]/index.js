@@ -14,7 +14,7 @@ const classroom = () => {
     const [errors, setErrors] = useState([])
 
     const router = useRouter()
-    const { slug } = router.query
+    const { id } = router.query
 
     const { showClassroom } = useUser({
         middleware: 'auth',
@@ -22,9 +22,9 @@ const classroom = () => {
 
     useEffect(() => {
 
-        slug && showClassroom({ slug, setLoading, setClassroom, setErrors })
+        id && showClassroom({ id, setLoading, setClassroom, setErrors })
 
-    }, [slug]); 
+    }, [id]); 
 
     return (
 
@@ -40,17 +40,17 @@ const classroom = () => {
                     
 
                     <div className="flex flex-col justify-center items-center">
-                        <h3 className="font-bold text-xl leading-4 text-gray-900 leading-10">
-                            Fiche de la salle {slug}
+                        <h3 className="font-bold text-xl text-gray-900 leading-10">
+                            Fiche de la salle:  {classroom?.name}
                         </h3>
-                        <AuthValidationErrors className="" errors={errors} />
+                        <AuthValidationErrors className="mb-3" errors={errors} />
                     </div>
 
                     <div className="py-8">
                         <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                            <div className="overflow-hidden shadow-sm sm:rounded-lg">
+                            <div className="overflow-hidden sm:rounded-lg">
 
-                                <div className="py-3 sm-px-0 px-2 border-b border-gray-200">
+                                <div className="py-3 sm-px-0 px-2">
 
                                     <div className="grid sm:grid-cols-1 sm:gap-6 grid-cols-1 gap-6">
                                         

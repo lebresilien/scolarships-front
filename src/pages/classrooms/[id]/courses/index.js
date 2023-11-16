@@ -19,13 +19,13 @@ const Courses = () => {
     })
 
     const router = useRouter()
-    const { slug } = router.query
+    const { courseId } = router.query
 
     useEffect(() => { 
 
-        slug && showClassroomCourses({ slug, setLoading, setCourses, setSequences, setErrors })
+        courseId && showClassroomCourses({ courseId, setLoading, setCourses, setSequences, setErrors })
 
-    }, [slug]); 
+    }, [courseId]); 
 
 
     return (
@@ -41,8 +41,8 @@ const Courses = () => {
                     </Head>
 
                     <div className="flex flex-col justify-center items-center">
-                        <h3 className="font-bold text-xl leading-4 text-gray-900 leading-10">
-                            Fiche des cours de la salle {slug}
+                        <h3 className="font-bold text-xl text-gray-900 leading-10">
+                            Fiche des cours de la salle {courseId}
                         </h3>
                         <AuthValidationErrors className="" errors={errors} />
                     </div>

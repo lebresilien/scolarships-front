@@ -44,7 +44,7 @@ const Unit = () => {
     const [toggleCleared, setToggleCleared] = useState(false)
     const [waiting, setWaiting] = useState(false)
     const [errors, setErrors] = useState([])
-
+  
     const ref = useRef(null);
     
     const filteredItems = state.filter(
@@ -108,7 +108,7 @@ const Unit = () => {
             selector: row => 
                 <div className="flex flex-row">
                     <FaEdit className="cursor-pointer mr-2" title="modifier" size={25} onClick={() => showModalUpdate(row.id, row.name, row.description, row.group)}/>
-                    <Link href={""+type+"/"+row.slug}><FaInfoCircle title="details" className="cursor-pointer mr-2" size={25} /></Link>
+                    <Link href={""+type+"/"+row.id}><a target="_blank"><FaInfoCircle title="details" className="cursor-pointer mr-2" size={25} /></a></Link>
                 </div> 
         }
     ];
@@ -161,13 +161,14 @@ const Unit = () => {
 
             <div className="py-12" ref={ref}>
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                    <div className="overflow-hidden shadow-sm sm:rounded-lg">
-                        <div className="py-6 m-5 lg:m-10 border-b border-gray-200">
-
-                            <AuthValidationErrors 
-                                className="mb-4 mt-5" 
-                                errors={errors} 
-                            />
+                    <div className="overflow-hidden sm:rounded-lg">
+                        <div className="">
+                            <div className="flex items-center">
+                                <AuthValidationErrors 
+                                    className="mb-4 mt-5" 
+                                    errors={errors} 
+                                />
+                            </div>
 
                             <DataTable
                                 title={<TitleComponent title="Unité enseignements" setShowModal={setShowModal} setUpdateName={setName} setUpdateDescription={setDescription} />}
@@ -207,7 +208,7 @@ const Unit = () => {
                 setName={setName}
                 description={description}
                 setDescription={setDescription}
-                slug={id}
+                id={id}
                 save={add}
                 edit={edit}
                 additional={additionals}

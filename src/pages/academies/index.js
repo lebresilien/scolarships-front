@@ -71,7 +71,7 @@ const Academy = () => {
                             <Button
                                 onClick={() => {
 
-                                    updateAcademy({ academy_id, setActive, onClose, setWaiting, academies, setAcademies })
+                                    updateAcademy({ academy_id, setActive, onClose, setWaiting, state, setState })
 
                                 }}
                                 className="inline-flex items-center px-2 py-2 bg-red-500 border border-transparent rounded-md font-semibold text-medium text-white tracking-widest hover:bg-red-600 active:bg-red-600 focus:outline-none focus:border-red-600 focus:ring ring-red-300 disabled:opacity-25 transition ease-in-out duration-150"
@@ -166,8 +166,8 @@ const Academy = () => {
 
             <div className="py-12">
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                    <div className="overflow-hidden shadow-sm sm:rounded-lg">
-                        <div className="py-6 border-b border-gray-200">
+                    <div className="overflow-hidden sm:rounded-lg">
+                        <div className="">
 
                             <AuthValidationErrors 
                                 className="mb-4 mt-5" 

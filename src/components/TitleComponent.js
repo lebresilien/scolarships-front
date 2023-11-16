@@ -28,7 +28,8 @@ const TitleComponent = ({
     setAllergy,
     setAmount,
     setSurname,
-    surname
+    surname,
+    setCoeff
 }) => {
      
     const show = () => {
@@ -53,6 +54,7 @@ const TitleComponent = ({
         setAllergy && setAllergy('')
         setAmount && setAmount('')
         setSurname && setSurname(surname)
+        setCoeff && setCoeff('')
     }
     
     return (

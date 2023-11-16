@@ -119,8 +119,8 @@ const Classroom = () => {
             selector: row => 
                 <div className="flex flex-row">
                     <FaEdit className="cursor-pointer mr-2" title="modifier" size={25} onClick={() => showModalUpdate(row.id, row.building, row.group, row.name, row.description)}/>
-                    <Link href={"classrooms/"+row.slug+"/courses"}><VscNote title="notes" className="cursor-pointer mr-2" size={25} /></Link>
-                    <Link href={"classrooms/"+row.slug}><FaInfoCircle title="details" className="cursor-pointer mr-2" size={25} /></Link>
+                    <Link href={"classrooms/"+row.id+"/courses"}><a target='_blank'><VscNote title="notes" className="cursor-pointer mr-2" size={25} /></a></Link>
+                    <Link href={"classrooms/"+row.id}><a target='_blank'><FaInfoCircle title="details" className="cursor-pointer mr-2" size={25} /></a></Link>
                 </div>
         }
     ];

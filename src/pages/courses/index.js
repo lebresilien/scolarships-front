@@ -3,12 +3,14 @@ import Head from 'next/head'
 import { useUser } from '@/hooks/user'
 import DataTable from 'react-data-table-component'
 import  FilterComponent  from '@/components/FilterComponent'
-import { useState, useEffect, useMemo } from "react"
+import { useState, useEffect, useMemo, useCallback } from "react"
 import { FaEdit } from 'react-icons/fa'
 import TitleComponent from '@/components/TitleComponent'
 import ModalSection from '@/components/ModalSection'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
+import AuthValidationErrors from '@/components/AuthValidationErrors'
+import Button from '@/components/Button'
 
 const customStyles = {
    
@@ -39,6 +41,10 @@ const Courses = () => {
     const [description, setDescription] = useState('')
     const [coeff, setCoeff] = useState('')
     const [id, setId] = useState('')
+    const [selectedRows, setSelectedRows] = useState(false)
+    const [toggleCleared, setToggleCleared] = useState(false)
+    const [waiting, setWaiting] = useState(false)
+    const [errors, setErrors] = useState([])
 
     const filteredItems = state.filter(
 		item => item.name && item.name.toLowerCase().includes(filterText.toLowerCase()),
@@ -96,6 +102,31 @@ const Courses = () => {
         );
 	}, [filterText, resetPaginationToggle]);
 
+    const handleRowSelected = useCallback(state => {
+		setSelectedRows(state.selectedRows);
+	}, []);
+
+    const contextActions = useMemo(() => {
+		const handleDelete = () => {
+			
+			if (window.confirm(`Are you sure you want to deleted:\r ${selectedRows.map(r => r.title)}?`)) {
+				setToggleCleared(!toggleCleared);
+                let ids = "";
+                selectedRows.forEach((item, index) => {
+                    if(index == (selectedRows.length - 1)) ids += item.id
+                    else ids += item.id + ';'
+                })
+                remove({ setErrors, setWaiting, ids, state, setState, type })
+			}
+		};
+
+		return (
+			<Button disabled={waiting} key="delete" onClick={handleDelete} style={{ backgroundColor: 'red' }}>
+				{ waiting ? 'Suppression...' : 'Supprimer' }
+			</Button>
+		);
+	}, [state, selectedRows, toggleCleared])
+
     const showModalUpdate = (id, name, description, group, coeff) => {
         setUpdate(true)
         setShowModal(true)
@@ -117,12 +148,13 @@ const Courses = () => {
 
             <div className="py-12">
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                    <div className="overflow-hidden shadow-sm sm:rounded-lg">
-                        <div className="py-6 border-b border-gray-200">
+                    <div className="overflow-hidden sm:rounded-lg">
+                        <div className="">
 
+                            <AuthValidationErrors className="mb-4 mt-5" errors={errors} />
 
                             <DataTable
-                                title={<TitleComponent title="Matiéres" setShowModal={setShowModal} setUpdate={setUpdate} setName={setName} />}
+                                title={<TitleComponent title="Matiéres" setShowModal={setShowModal} setCoeff={setCoeff} setDescription={setDescription} setUpdate={setUpdate} setName={setName} />}
                                 columns={columns}
                                 data={filteredItems}
                                 pagination
@@ -132,6 +164,11 @@ const Courses = () => {
                                 persistTableHead
                                 progressPending={pending}
                                 customStyles={customStyles}
+                                selectableRows
+                                contextActions={contextActions}
+                                selectedRows={selectedRows}
+                                clearSelectedRows={toggleCleared}
+                                onSelectedRowsChange={handleRowSelected}
                             />
 
                         </div>
@@ -154,7 +191,7 @@ const Courses = () => {
                 setUpdate={setUpdate}
                 name={name}
                 setName={setName}
-                slug={id}
+                id={id}
                 additional={additionals}
                 save={add}
                 edit={edit}

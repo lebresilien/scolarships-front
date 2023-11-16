@@ -1,9 +1,9 @@
 
 const Card = ({ title, value }) => (
-    <div className="grid sm:block lg:grid xl:block grid-cols-2 grid-rows-2 items-center">
+    <div className="grid  sm:block lg:grid xl:block grid-cols-2 grid-rows-2 items-center">
         <div className="hover:bg-blue-500 hover:ring-blue-500 hover:shadow-md group rounded-md p-3 bg-white ring-1 ring-slate-200 shadow-sm">
             <dl className="grid sm:block lg:grid xl:block grid-cols-2 grid-rows-2 items-center">
-                <div>
+                <div className="flex justify-center">
                     <dt className="sr-only">Nom</dt>
                     <dd className="group-hover:text-white font-semibold text-slate-900">
                         { title }

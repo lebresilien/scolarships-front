@@ -54,11 +54,11 @@ export const useUser = ({ middleware  } = {}) => {
         setLoaded(false)
     }
 
-    const showClassroom = async ({ slug, setLoading, setClassroom, setErrors }) => {
+    const showClassroom = async ({ id, setLoading, setClassroom, setErrors }) => {
         setLoading(true)
         await csrf()
 
-        axios.get('/api/v1/classrooms/'+slug)
+        axios.get('/api/v1/classrooms/'+id)
          .then(res => {
             setClassroom(res.data.data)
         })
@@ -68,11 +68,11 @@ export const useUser = ({ middleware  } = {}) => {
         setLoading(false)
     }
 
-    const showClassroomCourses = async ({ slug, setLoading, setCourses, setSequences, setErrors }) => {
+    const showClassroomCourses = async ({ courseId, setLoading, setCourses, setSequences, setErrors }) => {
         setLoading(true)
         await csrf()
 
-        axios.get('/api/v1/classrooms/'+slug+'/courses')
+        axios.get('/api/v1/classrooms/'+courseId+'/courses')
         .then(res => {
             console.log('console log', res.data)
             setCourses(res.data.courses)
@@ -154,7 +154,7 @@ export const useUser = ({ middleware  } = {}) => {
         setLoading(false)
     }
 
-    const updateAcademy = async ({ setActive, onClose, setWaiting, setLoading, academies, setAcademies, ...props }) => {
+    const updateAcademy = async ({ setActive, onClose, setWaiting, setLoading, state, setState, ...props }) => {
         
         setWaiting(true)
         await csrf()
@@ -164,10 +164,10 @@ export const useUser = ({ middleware  } = {}) => {
             .then(() => {
                 setActive(false)
                 const index = academies.findIndex(item => item.id == props.academy_id)
-                const academiesCopy = [...academies]
+                const academiesCopy = [...state]
                 academiesCopy[index] = {...academiesCopy[index], status: 0}
-                setAcademies(academiesCopy)
-                onClose()
+                setState(academiesCopy)
+                onClose(true)
             })
            
         setWaiting(false)  
@@ -212,12 +212,14 @@ export const useUser = ({ middleware  } = {}) => {
         setPending(false) 
     }
 
-    const show = async ({ id, setValue, setLoading, type, setErrors }) => {
+    const show = async ({ id, setValue, setName, setLoading, type, setErrors }) => {
        
         await csrf()
         axios.get(`/api/v1/${type}/${id}`)
          .then(res => {
-            setValue(res.data.data)
+            const data = res.data.data
+            setValue(data.data)
+            setName && setName(data.name)
         })
         .catch(error => {
             setErrors(Object.values(error.response.data.errors).flat())
@@ -366,7 +368,7 @@ export const useUser = ({ middleware  } = {}) => {
             
     }
 
-    const edit = async ({ type, additional, id, setState, setErrors, setLoading, setOpen, setPending, ...props }) => {
+    const edit = async ({ type, additional, id, setState, setErrors, setLoading, setOpen, setPending, other, ...props }) => {
 
         setLoading(true)
 
@@ -387,7 +389,7 @@ export const useUser = ({ middleware  } = {}) => {
                         const item = additional.find(group => group.value == props.unit_id)
                         const copySection = [...props.state]
                         const currentItem = copySection.find(item => item.id === id)
-                       
+                        
                         currentItem.name = props.name
                         currentItem.description = props.description
                         currentItem.coeff = props.coeff
@@ -409,12 +411,12 @@ export const useUser = ({ middleware  } = {}) => {
                         setState(copySection)
 
                     } else if(type === "classrooms") {
-
+                        
                         const item = additional.find(group => group.value == props.group_id)
                         const search = other.find(el => el.value == props.building_id)
                         const copySection = [...props.state]
                         const currentItem = copySection.find(item => item.id === id)
-                       
+                    
                         currentItem.name = props.name
                         currentItem.description = props.description
                         currentItem.building = search
@@ -423,7 +425,7 @@ export const useUser = ({ middleware  } = {}) => {
                         setState(copySection)
 
                     } else {
-
+                        
                         const item = additional.find(group => group.value == props.group_id)
                         const copySection = [...props.state]
                         const currentItem = copySection.find(item => item.id === id)

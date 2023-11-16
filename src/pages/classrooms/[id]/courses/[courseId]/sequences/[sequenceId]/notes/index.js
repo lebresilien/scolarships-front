@@ -53,11 +53,11 @@ const Notes = () => {
                 <AppLayout>
 
                     <Head>
-                        <title>Scolarships - Salles</title>
+                        <title>Scolarships - Notes</title>
                     </Head>
 
                     <div className="flex flex-col justify-center items-center">
-                        <h3 className="font-bold text-xl leading-4 text-gray-900 leading-10">
+                        <h3 className="font-bold text-xl text-gray-900 leading-10">
                             Notes { slug } { sequenceId } matiere { id }
                         </h3>
                         <AuthValidationErrors className="" errors={errors} />
