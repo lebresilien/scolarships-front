@@ -68,11 +68,10 @@ export const useUser = ({ middleware  } = {}) => {
         setLoading(false)
     }
 
-    const showClassroomCourses = async ({ courseId, setLoading, setCourses, setSequences, setErrors }) => {
+    const showClassroomCourses = async ({ id, setLoading, setCourses, setSequences, setErrors }) => {
         setLoading(true)
         await csrf()
-
-        axios.get('/api/v1/classrooms/'+courseId+'/courses')
+        axios.get('/api/v1/classrooms/'+id+'/courses')
         .then(res => {
             console.log('console log', res.data)
             setCourses(res.data.courses)
@@ -84,13 +83,13 @@ export const useUser = ({ middleware  } = {}) => {
         setLoading(false)
     }
 
-    const showClassroomStudents = async ({ slug, id, sequenceId, setLoading, setStudents, setErrors }) => {
+    const showClassroomStudents = async ({ id, courseId, sequenceId, setLoading, setData, setErrors }) => {
         setLoading(true)
         await csrf()
 
-        axios.get('/api/v1/classrooms/'+slug+'/courses/'+id+'/sequences/'+sequenceId+'/students')
+        axios.get('/api/v1/classrooms/'+id+'/courses/'+courseId+'/sequences/'+sequenceId+'/students')
         .then(res => {
-            setStudents(res.data.data)
+            setData(res.data.data)
         })
         .catch(error => {
             setErrors(Object.values(error.response.data.errors).flat())
@@ -653,14 +652,14 @@ export const useUser = ({ middleware  } = {}) => {
 
         const data = {
             students: props.students,
-            sequence_slug: props.sequenceId,
-            classroom_slug: props.slug,
-            course_slug: props.id
+            sequence_id: props.sequenceId,
+            classroom_id: props.id,
+            course_id: props.courseId
         }
 
         axios
             .post('/api/v1/notes', data)
-            .then((res) => {
+            .then(() => {
                 toast('Notes mises à jour avec succés.')
             })
             .catch(error => {

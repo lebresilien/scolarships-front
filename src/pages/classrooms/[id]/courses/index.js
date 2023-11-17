@@ -19,13 +19,13 @@ const Courses = () => {
     })
 
     const router = useRouter()
-    const { courseId } = router.query
-
+    const { id } = router.query
+    
     useEffect(() => { 
 
-        courseId && showClassroomCourses({ courseId, setLoading, setCourses, setSequences, setErrors })
+        id && showClassroomCourses({ id, setLoading, setCourses, setSequences, setErrors })
 
-    }, [courseId]); 
+    }, [id]); 
 
 
     return (
@@ -42,25 +42,25 @@ const Courses = () => {
 
                     <div className="flex flex-col justify-center items-center">
                         <h3 className="font-bold text-xl text-gray-900 leading-10">
-                            Fiche des cours de la salle {courseId}
+                            Fiche des cours de la salle {id}
                         </h3>
                         <AuthValidationErrors className="" errors={errors} />
                     </div>
 
                     <div className="py-12">
                         <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                            <div className="overflow-hidden shadow-sm sm:rounded-lg">
-                                <div className="py-6 border-b border-gray-200">
+                            <div className="overflow-hidden sm:rounded-lg">
+                                <div className="">
 
                                 
                                     <div className='grid grid-cols-1 mx-3 md:mx-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4'>
                                         {courses?.map((course, index) => (
-                                            <div key={index} className="flex flex-col justify-center mb-2 sm:mx-2 rounded-md border border-gray-200 bg-white p-10 md:p-20 transition-shadow duration-300 hover:shadow-lg">
+                                            <div key={index} className="flex flex-col justify-center items-center mb-2 sm:mx-2 rounded-md border border-gray-200 bg-white p-5 md:p-10 transition-shadow duration-300 hover:shadow-lg">
                                                 
                                                 <dt className="mb-2 text-md font-extrabold">{ course.name }</dt>
 
                                                 {sequences?.map((seq, index) => (
-                                                    <Link href={`/classrooms/${slug}/courses/${course.slug}/sequences/${seq.slug}/notes`} key={index}>{ seq.name }</Link>
+                                                    <Link href={`/classrooms/${id}/courses/${course.id}/sequences/${seq.id}/notes`} key={index}><a target='_blank'>{ seq.name }</a></Link>
                                                 ))}
                                                 
                                             </div>

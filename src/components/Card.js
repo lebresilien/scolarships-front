@@ -9,7 +9,7 @@ const Card = ({ title, value }) => (
                         { title }
                     </dd>
                 </div>
-                <div>
+                <div className="flex justify-center">
                     <dt className="sr-only">Category</dt>
                     <dd className="group-hover:text-blue-200">{ value }</dd>
                 </div>

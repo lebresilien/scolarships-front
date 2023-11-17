@@ -12,9 +12,12 @@ import 'react-toastify/dist/ReactToastify.css'
 
 const Notes = () => {
 
-    const [students, setStudents] = useState([
-        {name: '', id: '', value: ''}
-    ])
+    const [data, setData] = useState({
+        sequence: '',
+        classroom: '',
+        course: '',
+        students: [{name: '', id: '', value: ''}]
+    })
     const [loading, setLoading] = useState(false)
     const [errors, setErrors] = useState([])
     const [pending, setPending] = useState(false)
@@ -24,23 +27,24 @@ const Notes = () => {
     })
 
     const router = useRouter()
-    const { slug, id, sequenceId } = router.query
+    const { id, courseId, sequenceId } = router.query
 
     useEffect(() => { 
 
-        (slug && id && sequenceId) && showClassroomStudents({ slug, id, sequenceId, setLoading, setStudents, setErrors })
+        (id && courseId && sequenceId) && showClassroomStudents({ id, courseId, sequenceId, setLoading, setData, setErrors })
 
-    }, [slug]);
+    }, [id, courseId, sequenceId]);
 
     const handleFormChange = (index, event) => {
-        let data = [...students];
-        data[index][event.target.name] = event.target.value;
-        setStudents(data)
+        let updatedStudents = [...data.students];
+        updatedStudents[index][event.target.name] = event.target.value;
+        setData({ ...data, students: updatedStudents });
     }
 
     const submitForm = (e) => {
         e.preventDefault()
-        addNote({ setErrors, setPending, slug, id, sequenceId, students })
+        const students = data.students
+        addNote({ setErrors, setPending, id, courseId, sequenceId, students })
     }
 
 
@@ -58,7 +62,7 @@ const Notes = () => {
 
                     <div className="flex flex-col justify-center items-center">
                         <h3 className="font-bold text-xl text-gray-900 leading-10">
-                            Notes { slug } { sequenceId } matiere { id }
+                            Notes Classe: { data?.classroom } Matiere: { data?.course } Sequence: { data?.sequence }
                         </h3>
                         <AuthValidationErrors className="" errors={errors} />
                     </div>
@@ -70,10 +74,10 @@ const Notes = () => {
                                 <div className="py-6 border-b border-gray-200">
 
                                     <form onSubmit={submitForm}>
-                                        <div class="flex mx-3 sm:mx-0 overflow-x-auto justify-center">
+                                        <div className="flex mx-3 sm:mx-0 overflow-x-auto justify-center">
                                             <table class="w-full sm:w-2/3 text-sm text-left text-gray-500">
                                                 
-                                                <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+                                                <thead className="text-xs font-bold text-gray-700 uppercase bg-gray-50">
                                                     <tr>
                                                         <th scope="col" class="px-6 py-3">
                                                             Noms et Prénoms
@@ -86,9 +90,9 @@ const Notes = () => {
 
                                                 <tbody>
 
-                                                    {students?.map((student, index) => (
-                                                        <tr class="bg-white border-b" key={student.id}>
-                                                            <td class="px-6 py-4">
+                                                    {data?.students.map((student, index) => (
+                                                        <tr className="bg-white border-b" key={student.id}>
+                                                            <td className="px-6 py-4">
                                                                 { student.name }
                                                             </td>
                                                             <td class="px-6 py-4">
