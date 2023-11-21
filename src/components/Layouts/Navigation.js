@@ -60,8 +60,20 @@ const Navigation = ({ user }) => {
 
                             <NavLink
                                 href="/students"
-                                active={router.pathname == '/strudents'}>
+                                active={router.pathname == '/students'}>
                                 Apprenants
+                            </NavLink>
+
+                            <NavLink
+                                href="/policies"
+                                active={router.pathname == '/policies'}>
+                                Contrats
+                            </NavLink>
+
+                            <NavLink
+                                href="/units"
+                                active={router.pathname == '/units'}>
+                                Enseignements
                             </NavLink>
 
                             <NavLink
@@ -134,6 +146,11 @@ const Navigation = ({ user }) => {
                                 Signature
                             </DropdownButton>
                             <DropdownButton>
+                                <Link href="/transactions">
+                                    <a>Transactions</a>
+                                </Link>
+                            </DropdownButton>
+                            <DropdownButton>
                                 <Link href="/academies">
                                     <a>Academies</a>
                                 </Link>
@@ -191,6 +208,18 @@ const Navigation = ({ user }) => {
                             href="/students"
                             active={router.pathname == '/students'}>
                             Apprenants
+                        </ResponsiveNavLink>
+
+                        <ResponsiveNavLink
+                            href="/policies"
+                            active={router.pathname == '/policies'}>
+                            Contrats
+                        </ResponsiveNavLink>
+
+                        <ResponsiveNavLink
+                            href="/units"
+                            active={router.pathname == '/units'}>
+                            Enseignements
                         </ResponsiveNavLink>
 
                         <ResponsiveNavLink

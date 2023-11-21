@@ -6,6 +6,7 @@ import { useRouter } from 'next/router'
 import Link from 'next/link'
 import AuthValidationErrors from '@/components/AuthValidationErrors'
 import LoadingScreen from '@/components/LoadingScreen'
+import Button from '@/components/Button'
 
 const Courses = () => {
 
@@ -60,7 +61,9 @@ const Courses = () => {
                                                 <dt className="mb-2 text-md font-extrabold">{ course.name }</dt>
 
                                                 {sequences?.map((seq, index) => (
-                                                    <Link href={`/classrooms/${id}/courses/${course.id}/sequences/${seq.id}/notes`} key={index}><a target='_blank'>{ seq.name }</a></Link>
+                                                    <Button key={index} className={'mt-2'}>
+                                                        <Link href={`/classrooms/${id}/courses/${course.id}/sequences/${seq.id}/notes`}><a target='_blank'>{ seq.name }</a></Link>
+                                                    </Button>
                                                 ))}
                                                 
                                             </div>

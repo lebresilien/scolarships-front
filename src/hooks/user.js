@@ -320,6 +320,13 @@ export const useUser = ({ middleware  } = {}) => {
         return axios.get(url)
     }
 
+    const indexWithParams = async (url, params) => {
+        await csrf()
+        return axios.get(url, {
+            params: params
+        })
+    }
+
     const create = async (url, data) => {
         await csrf()
         return axios.post(url, data)
@@ -839,6 +846,7 @@ export const useUser = ({ middleware  } = {}) => {
         getClassroom,
         index,
         create,
-        change
+        change,
+        indexWithParams
     }
 }
