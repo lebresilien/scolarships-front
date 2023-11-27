@@ -33,7 +33,11 @@ function ModalPay ({
     additional, 
     options,
     setStatus,
-    setSelectedStatus
+    setSelectedStatus,
+    day,
+    setDay,
+    hour,
+    setHour,
     }) {
 
 
@@ -42,7 +46,7 @@ function ModalPay ({
         e.preventDefault();
 
         {update ?
-            type === "transactions" ?  edit({setState, state, setErrors, setOpen, name, amount, type, setLoading, id}): edit() :
+            type === "transactions" | type === "absents" ?  edit({setState, state, setErrors, setOpen, name, amount, type, setLoading, id, hour, day}): edit() :
             save()
         }
     }
@@ -121,6 +125,39 @@ function ModalPay ({
                                                     />
                                                 </div>
                                             </div>
+
+                                            {type == "absents" && ((
+                                                <div>
+                                                    <div className='mb-3'>
+                                                        <div>
+                                                            <Label htmlFor="day">Date </Label>
+                                                            <Input
+                                                                id="day"
+                                                                type="date"
+                                                                value={day}
+                                                                className="block mt-1 w-full bg-gray-50"
+                                                                onChange={event => setDay(event.target.value)}
+                                                                required
+                                                                autoFocus
+                                                            />
+                                                        </div>
+                                                    </div>
+
+                                                    <div className="mb-3">
+                                                        <div>
+                                                            <Label htmlFor="hour">Nombre d'heures </Label>
+                                                            <Input
+                                                                id="hour"
+                                                                type="number"
+                                                                value={hour}
+                                                                className="block mt-1 w-full bg-gray-50"
+                                                                onChange={event => setHour(event.target.value)}
+                                                                required
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            ))}
 
                                             {type == "transactions" && ((
                                                 <div>

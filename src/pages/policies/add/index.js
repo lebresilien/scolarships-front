@@ -36,7 +36,6 @@ const Add = () => {
     const [amount, setAmount] = useState('')
     const [classroom_id, setClassroom_id] = useState('')
     const [errors, setErrors] = useState([])
-
     const ref = useRef(null);
 
     const filteredItems = state.filter(
@@ -48,9 +47,7 @@ const Add = () => {
     })
 
     useEffect(() => { 
-
         list({ setState, setPending, setAdditionals, type })
-
     },[])
 
     const showModalUpdate = (id, name) => {

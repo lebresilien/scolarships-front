@@ -115,7 +115,7 @@ const Group = () => {
             selector: row => 
                 <div className="flex flex-row">
                     <FaEdit className="cursor-pointer mr-2" title="modifier" size={25} onClick={() => showModalUpdate(row.id, row.name, row.fees, row.description, row.group)}/>
-                    <Link href={"groups/"+row.slug}><FaInfoCircle title="details" className="cursor-pointer mr-2" size={25} /></Link>
+                    <Link href={"groups/"+row.id}><a href="_blank"><FaInfoCircle title="details" className="cursor-pointer mr-2" size={25} /></a></Link>
                 </div> 
         }
     ];
@@ -168,8 +168,8 @@ const Group = () => {
 
             <div className="py-12" ref={ref}>
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                    <div className="overflow-hidden shadow-sm sm:rounded-lg px-10">
-                        <div className="py-6 border-b border-gray-200">
+                    <div className="overflow-hidden sm:rounded-lg px-10">
+                        <div className="">
 
                             <AuthValidationErrors className="mb-4 mt-5" errors={errors} />
 

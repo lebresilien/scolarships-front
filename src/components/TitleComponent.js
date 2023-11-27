@@ -29,7 +29,9 @@ const TitleComponent = ({
     setAmount,
     setSurname,
     surname,
-    setCoeff
+    setCoeff,
+    setHour,
+    setDay
 }) => {
      
     const show = () => {
@@ -55,6 +57,8 @@ const TitleComponent = ({
         setAmount && setAmount('')
         setSurname && setSurname(surname)
         setCoeff && setCoeff('')
+        setDay && setDay('')
+        setHour && setHour('')
     }
     
     return (

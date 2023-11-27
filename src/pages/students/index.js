@@ -2,7 +2,8 @@ import AppLayout from '@/components/Layouts/AppLayout'
 import Head from 'next/head'
 import { useUser } from '@/hooks/user'
 import DataTable from 'react-data-table-component'
-import  FilterComponent  from '@/components/FilterComponent'
+import FilterComponent from '@/components/FilterComponent'
+import AuthValidationErrors from '@/components/AuthValidationErrors'
 import { useState, useEffect, useMemo, useCallback, useRef } from "react"
 import { FaInfoCircle, FaEdit } from 'react-icons/fa'
 import TitleComponent from '@/components/TitleComponent'
@@ -13,14 +14,12 @@ import Link from 'next/link'
 import Button from '@/components/Button'
 
 const customStyles = {
-   
     headCells: {
         style: {
             fontWeight: 'bolder'
-        },
-    },
-   
-};
+        }
+    }
+}
 
 const type = "students"
 
@@ -132,8 +131,6 @@ const Student = () => {
             selector: row => 
                 <div className="flex flex-row"> 
                     <FaEdit className="cursor-pointer mr-2" size={25} onClick={() => showModalUpdate(row.id, row.fname, row.lname, row.sexe, row.born_at, row.born_place, row.comming, row.allergy, row.quarter, row.mother_name, row.father_name, row.fphone, row.mphone)} />
-                    {/* <FaMoneyBill className="cursor-pointer mr-2" onClick={() => showPaiment(row.id)} size={30} />
-                    <BsSignpostSplitFill className="cursor-pointer mr-2" onClick={() => showMoratoire(row.id, row.lname, row.fname)} size={25} /> */}
                     <Link href={"students/"+row.id}><a target="_blank"><FaInfoCircle className="cursor-pointer mr-2" size={25} /></a></Link>
                 </div>
         }
@@ -187,8 +184,10 @@ const Student = () => {
 
             <div className="py-12" ref={ref}>
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                    <div className="overflow-hidden shadow-sm sm:rounded-lg px-10">
+                    <div className="overflow-hidden sm:rounded-lg px-10">
                         <div className="">
+
+                            <AuthValidationErrors className="text-center mb-4 mt-5" errors={errors} />
 
                             <DataTable
                                 title={<TitleComponent title="Apprenants" setAllergy={setAllergy} setComming={setComming} setAmount={setAmount} setQuarter={setQuarter} setBornAt={setBornAt} setBornPlace={setBornPlace} setSexe={setSexe} setLname={setLname} setFname={setFname} setMotherName={setMotherName} setMphone={setMphone} setFatherName={setFatherName} setFphone={setFphone} setShowModal={setShowModal} />}

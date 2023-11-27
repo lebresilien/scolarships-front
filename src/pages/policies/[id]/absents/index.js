@@ -3,56 +3,68 @@ import Head from 'next/head'
 import { useUser } from '@/hooks/user'
 import DataTable from 'react-data-table-component'
 import FilterComponent from '@/components/FilterComponent'
-import { useState, useEffect, useMemo, useRef, useCallback } from "react"
+import { useState, useEffect, useMemo, useCallback, useRef } from "react"
+import { FaEdit } from 'react-icons/fa'
 import TitleComponent from '@/components/TitleComponent'
-import AuthValidationErrors from '@/components/AuthValidationErrors'
+import ModalPay from '@/components/ModalPay'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
-import { FaEdit, FaInfoCircle } from 'react-icons/fa'
-import Link from 'next/link'
-import ModalSection from '@/components/ModalSection'
 import Button from '@/components/Button'
-
-const type = 'buildings'
+import { useRouter } from 'next/router'
+import { toast } from 'react-toastify';
 
 const customStyles = {
     headCells: {
         style: {
             fontWeight: 'bolder'
-        }
-    }
-}
+        },
+    },
+};
 
-const Building = () => {
+const type = 'absents'
+
+const Absent = () => {
 
     const [state, setState] = useState([])
     const [pending, setPending] = useState(true)
     const [loading, setLoading] = useState(false)
     const [showModal, setShowModal] = useState(false)
-    const [name, setName] = useState('')
-    const [description, setDescription] = useState('')
     const [update, setUpdate] = useState(false)
+    const [hour, setHour] = useState('')
+    const [day, setDay] = useState('')
+    const [surname, setSurname] = useState('')
+    const [slug, setId] = useState('')
     const [filterText, setFilterText] = useState('')
     const [resetPaginationToggle, setResetPaginationToggle] = useState(false)
-    const [id, setId] = useState('')
-    const ref = useRef(null);
     const [selectedRows, setSelectedRows] = useState(false)
     const [toggleCleared, setToggleCleared] = useState(false)
     const [waiting, setWaiting] = useState(false)
     const [errors, setErrors] = useState([])
-    
+
+    const ref = useRef(null);
+
     const filteredItems = state.filter(
-		item => item.name && item.name.toLowerCase().includes(filterText.toLowerCase()),
+		item => item.day && item.day.toLowerCase().includes(filterText.toLowerCase()),
 	)
 
-    const { list, add, edit, remove } = useUser({
-        middleware: 'auth'
+    const router = useRouter()
+    const { id } = router.query;
+
+    const { index, create, edit, remove } = useUser({
+        middleware: 'auth',
     })
 
     useEffect(() => { 
 
-        list({ setState, setPending, type })
-
+        id && ((
+            index('/api/v1/policies/'+id+'/absents')
+            .then(res => {
+                setPending(false)
+                setState(res.data.state)
+               setSurname(res.data.surname)
+            })
+        ))
+        
         const handleClick = () => {
            setUpdate(false)
         };
@@ -65,38 +77,34 @@ const Building = () => {
             element.removeEventListener('click', handleClick);
         };
 
-    },[])
+    }, [id])
 
-    const showModalUpdate = (id, name, description) => {
+    const showModalUpdate = (id, day, hour) => {
         setUpdate(true)
         setShowModal(true)
-        setName(name)
         setId(id)
-        setDescription(description)
+        setDay(day)
+        setHour(hour)
+        setSurname(surname)
     }
 
     const columns = [
         {
-            name: 'Nom',
-            selector: row => row.name,
+            name: 'Date',
+            selector: row => row.day,
             sortable: true,
         },
         {
-            name: 'Description',
-            selector: row => row.description,
+            name: 'Nombre d\'heures',
+            selector: row => row.hour,
             sortable: true,
-        },
-        {
-            name: 'Crée le',
-            selector: row => row.created_at,
         },
         {
             name: 'Operations',
             selector: row => 
-                <div className="flex flex-row">
-                    <FaEdit className="cursor-pointer mr-2" title="modifier" size={25} onClick={() => showModalUpdate(row.id, row.name, row.description)}/>
-                    <Link href={"buildings/"+row.id}><FaInfoCircle title="details" className="cursor-pointer mr-2" size={25} /></Link>
-                </div> 
+                <div className="flex flex-row"> 
+                    <FaEdit className="cursor-pointer mr-2" size={25} onClick={() => showModalUpdate(row.id, row.day, row.hour)} />
+                </div>
         }
     ];
 
@@ -138,24 +146,46 @@ const Building = () => {
 		);
 	}, [state, selectedRows, toggleCleared]);
 
+    const save = () => {
+
+        setLoading(true);
+
+        const data = {
+            day: day,
+            hour: hour,
+            inscription_id: id
+        }
+
+        create('/api/v1/absents', data)
+        .then((response) => {
+            setLoading(false);
+            setState([
+                response.data.data,
+                ...state
+            ])
+            toast('Ajout réussi')
+        })
+        .catch(error => {
+            setErrors(Object.values(error.response.data.errors).flat())
+        })
+        setShowModal(false)
+    }
+
     return (
 
         <AppLayout>
 
             <Head>
-                <title>Scolarships - Batiments</title>
+                <title>Scolarships - Historique des absences</title>
             </Head>
-
-            <div className="flex flex-col justify-center items-center">
-                <AuthValidationErrors className="" errors={errors} />
-            </div>
 
             <div className="py-12" ref={ref}>
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                    <div className="overflow-hidden sm:rounded-lg">
+                    <div className="overflow-hidden sm:rounded-lg px-10">
                         <div className="">
+
                             <DataTable
-                                title={<TitleComponent title="Batiments" setShowModal={setShowModal} setUpdateName={setName} setUpdateDescription={setDescription} />}
+                                title={<TitleComponent title="Historique d'absences" setShowModal={setShowModal} setHour={setHour} setDay={setDay} />}
                                 columns={columns}
                                 data={filteredItems}
                                 pagination
@@ -171,6 +201,7 @@ const Building = () => {
                                 clearSelectedRows={toggleCleared}
                                 onSelectedRowsChange={handleRowSelected}
                             />
+
                         </div>
                     </div>
                 </div>
@@ -178,29 +209,31 @@ const Building = () => {
 
             <ToastContainer />
 
-            <ModalSection
+            <ModalPay 
                 open={showModal} 
                 setOpen={setShowModal} 
-                title="Batiments"
+                title="Historique de transactions"
                 loading={loading}
                 setLoading={setLoading}
+                state={state}
                 setPending={setPending}
                 update={update}
-                name={name}
-                setName={setName}
-                description={description}
-                setDescription={setDescription}
-                id={id}
                 setState={setState}
-                state={state}
-                save={add}
+                hour={hour}
+                setHour={setHour}
+                day={day}
+                setDay={setDay}
+                surname={surname}
+                id={slug}
+                errors={errors}
+                setErrors={setErrors}
+                save={save}
                 edit={edit}
                 type={type}
-            /> 
+            />
 
         </AppLayout>
     )
-
 }
 
-export default Building;
+export default Absent

@@ -163,11 +163,8 @@ const Unit = () => {
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
                     <div className="overflow-hidden sm:rounded-lg">
                         <div className="">
-                            <div className="flex items-center">
-                                <AuthValidationErrors 
-                                    className="mb-4 mt-5" 
-                                    errors={errors} 
-                                />
+                            <div className="flex items-center justify-center">
+                                <AuthValidationErrors className="mb-4 mt-5" errors={errors} />
                             </div>
 
                             <DataTable

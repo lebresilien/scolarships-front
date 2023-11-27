@@ -40,20 +40,6 @@ export const useUser = ({ middleware  } = {}) => {
             })
     }
 
-    const showBuilding = async ({ slug, setLoaded, setData, setErrors }) => {
-       
-        await csrf()
-
-        axios.get('/api/v1/buildings/'+slug)
-         .then(res => {
-            setData(res.data.data)
-        })
-        .catch(error => {
-            setErrors(Object.values(error.response.data.errors).flat())
-        })
-        setLoaded(false)
-    }
-
     const showClassroom = async ({ id, setLoading, setClassroom, setErrors }) => {
         setLoading(true)
         await csrf()
@@ -211,8 +197,7 @@ export const useUser = ({ middleware  } = {}) => {
         setPending(false) 
     }
 
-    const show = async ({ id, setValue, setName, setLoading, type, setErrors }) => {
-       
+    const show = async ({id, setValue, setName, setLoading, type, setErrors}) => {
         await csrf()
         axios.get(`/api/v1/${type}/${id}`)
          .then(res => {
@@ -223,7 +208,6 @@ export const useUser = ({ middleware  } = {}) => {
         .catch(error => {
             setErrors(Object.values(error.response.data.errors).flat())
         })
-
         setLoading(false)
     }
 
@@ -450,6 +434,8 @@ export const useUser = ({ middleware  } = {}) => {
                     if(type === "transactions") currentItem.title = props.name
                     if(props.amount) currentItem.amount = props.amount
                     if(props.description) currentItem.description = props.description
+                    if(props.day) currentItem.day = props.day
+                    if(props.hour) currentItem.hour = props.hour
                     setState(copySection)
                 }
              
@@ -840,7 +826,6 @@ export const useUser = ({ middleware  } = {}) => {
         getSequenceSectionStats,
         getSequenceGroupStats,
         getSequenceClassroomStats,
-        showBuilding,
         add,
         remove,
         getClassroom,

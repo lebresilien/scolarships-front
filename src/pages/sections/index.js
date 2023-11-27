@@ -2,7 +2,7 @@ import AppLayout from '@/components/Layouts/AppLayout'
 import Head from 'next/head'
 import { useUser } from '@/hooks/user'
 import DataTable from 'react-data-table-component'
-import  FilterComponent  from '@/components/FilterComponent'
+import FilterComponent from '@/components/FilterComponent'
 import { useState, useEffect, useMemo, useRef, useCallback } from "react"
 import TitleComponent from '@/components/TitleComponent'
 import { ToastContainer } from 'react-toastify'
@@ -14,14 +14,12 @@ import Button from '@/components/Button'
 import AuthValidationErrors from '@/components/AuthValidationErrors'
 
 const customStyles = {
-   
     headCells: {
         style: {
             fontWeight: 'bolder'
-        },
-    },
-   
-};
+        }
+    }
+}
 
 const type = 'sections'
 
@@ -41,7 +39,6 @@ const Section = () => {
     const [toggleCleared, setToggleCleared] = useState(false)
     const [waiting, setWaiting] = useState(false)
     const [errors, setErrors] = useState([])
-
     const ref = useRef(null);
     
     const filteredItems = state.filter(
@@ -97,7 +94,7 @@ const Section = () => {
             selector: row => 
                 <div className="flex flex-row">
                     <FaEdit className="cursor-pointer mr-2" title="modifier" size={25} onClick={() => showModalUpdate(row.id, row.name, row.description)}/>
-                    <Link href={""+type+"/"+row.slug}><FaInfoCircle title="details" className="cursor-pointer mr-2" size={25} /></Link>
+                    <Link href={""+type+"/"+row.id}><FaInfoCircle title="details" className="cursor-pointer mr-2" size={25} /></Link>
                 </div> 
         }
     ];

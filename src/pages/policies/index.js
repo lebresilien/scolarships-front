@@ -41,6 +41,7 @@ const Policy = () => {
     const [pending, setPending] = useState(true)
     const [loading, setLoading] = useState(false)
     const [showModal, setShowModal] = useState(false)
+    const [showModalAbsent, setShowModalAbsent] = useState(false)
     const [update, setUpdate] = useState(false)
     const [name, setName] = useState('')
     const [status, setStatus] = useState('')
@@ -130,8 +131,9 @@ const Policy = () => {
             name: 'Operations',
             selector: row => 
                 <div className="flex flex-row"> 
-                    <FaEdit className="cursor-pointer mr-2" size={25} onClick={() => showModalUpdate(row.policy_id, row.name, row.status, row.group)} />
-                    <Link href={`policies/${row.policy_id}/histories`}><a target="_blank"><FaInfoCircle className="cursor-pointer mr-2" size={25} /></a></Link>
+                    <FaEdit className="cursor-pointer mr-2" size={25} title='modifier' onClick={() => showModalUpdate(row.policy_id, row.name, row.status, row.group)} />
+                    <Link href={`policies/${row.policy_id}/histories`}><a target="_blank"><FaInfoCircle className="cursor-pointer mr-2" size={25} title="Historiques" /></a></Link>
+                    <Link href={`policies/${row.policy_id}/absents`}><a target="_blank"><FaInfoCircle className="cursor-pointer mr-2" size={25} title='Absences' /></a></Link>
                 </div>
         }
     ];
@@ -230,11 +232,11 @@ const Policy = () => {
                                 persistTableHead
                                 progressPending={pending}
                                 customStyles={customStyles}
-                                selectableRows
-                                contextActions={contextActions}
-                                selectedRows={selectedRows}
+                                //selectableRows
+                                //contextActions={contextActions}
+                                /* selectedRows={selectedRows}
                                 clearSelectedRows={toggleCleared}
-                                onSelectedRowsChange={handleRowSelected}
+                                onSelectedRowsChange={handleRowSelected} */
                             />
 
                         </div>
