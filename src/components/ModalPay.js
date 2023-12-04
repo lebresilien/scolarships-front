@@ -210,17 +210,24 @@ function ModalPay ({
                                                 </div>
                                             ))}
 
-                                            {type == "policies/2" && ((
+                                            {type == "policies/1" && ((
                                                 <div>
+
+                                                    <div className="mb-2">
+                                                        <Label htmlFor="description">Status </Label>
+                                                        <div>
+                                                            <Select options={options}  onChange={handleChangeStatus} value={selectedStatus} />
+                                                        </div>
+                                                    </div>
                                                     
                                                     <div className="mb-2">
                                                         <Label htmlFor="description">Selectioner la salle de classe </Label>
                                                         <div>
-                                                            <Select options={additional}  onChange={handleChange} />
+                                                            <Select options={additional}  onChange={handleChange} value={selectedGroup} />
                                                         </div>
                                                     </div>
 
-                                                    <div className="mb-3">
+                                                    {/* <div className="mb-3">
                                                         <div>
                                                             <Label htmlFor="amount">Montant </Label>
                                                             <Input
@@ -232,7 +239,7 @@ function ModalPay ({
                                                                 required
                                                             />
                                                         </div>
-                                                    </div>
+                                                    </div> */}
                                                    
                                                 </div>
                                             ))}

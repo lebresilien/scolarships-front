@@ -2,7 +2,7 @@ import AppLayout from '@/components/Layouts/AppLayout'
 import Head from 'next/head'
 import { useUser } from '@/hooks/user'
 import DataTable from 'react-data-table-component'
-import  FilterComponent  from '@/components/FilterComponent'
+import FilterComponent  from '@/components/FilterComponent'
 import { useState, useEffect, useMemo, useCallback, useRef } from "react"
 import { FaInfoCircle, FaEdit } from 'react-icons/fa'
 import ModalPay from '@/components/ModalPay'
@@ -12,13 +12,11 @@ import Link from 'next/link'
 import Button from '@/components/Button'
 
 const customStyles = {
-   
     headCells: {
         style: {
             fontWeight: 'bolder'
         },
     },
-   
 };
 
 const options = [
@@ -41,7 +39,6 @@ const Policy = () => {
     const [pending, setPending] = useState(true)
     const [loading, setLoading] = useState(false)
     const [showModal, setShowModal] = useState(false)
-    const [showModalAbsent, setShowModalAbsent] = useState(false)
     const [update, setUpdate] = useState(false)
     const [name, setName] = useState('')
     const [status, setStatus] = useState('')
@@ -186,7 +183,7 @@ const Policy = () => {
             policy_id: id
         }
 
-        change('/api/v1/policies', id,  data)
+        change('/api/v1/policies', id, data)
         .then(() => {
 
             setLoading(false);
@@ -232,11 +229,6 @@ const Policy = () => {
                                 persistTableHead
                                 progressPending={pending}
                                 customStyles={customStyles}
-                                //selectableRows
-                                //contextActions={contextActions}
-                                /* selectedRows={selectedRows}
-                                clearSelectedRows={toggleCleared}
-                                onSelectedRowsChange={handleRowSelected} */
                             />
 
                         </div>
