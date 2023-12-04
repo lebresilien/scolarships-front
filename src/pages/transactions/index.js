@@ -30,8 +30,8 @@ const Transaction = () => {
     const [filterText, setFilterText] = useState('')
     const [resetPaginationToggle, setResetPaginationToggle] = useState(false)
 
-    const filteredItems = data.filter(
-        item => item.name && item.name.toLowerCase().includes(filterText.toLowerCase()),
+    const filteredItems = data?.length > 0 &&  data.filter(
+        item => (item && item.name) && item.name.toLowerCase().includes(filterText.toLowerCase()),
     )
 
     const { index, indexWithParams } = useUser({
@@ -53,13 +53,13 @@ const Transaction = () => {
 
     const handleChange = newValue => {
         index(`/api/v1/sections/${newValue.value}`).then(res => {
-            setGroups(res.data.data)
+            setGroups(res.data.data.data)
         })
     }
 
     const handleChangeGroup = newValue => {
         index(`/api/v1/groups/${newValue.value}`).then(res => {
-            setClassrooms(res.data.data)
+            setClassrooms(res.data.data.data)
         })
     }
 
@@ -74,7 +74,6 @@ const Transaction = () => {
         indexWithParams(`/api/v1/transactions/listing/${classroom_id}`, params)
         .then(res => {
             setData(res.data.data)
-            console.log(res.data.data)
             setLoading(false)
             setPending(false)
         })

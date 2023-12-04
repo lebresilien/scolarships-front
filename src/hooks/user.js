@@ -675,7 +675,7 @@ export const useUser = ({ middleware  } = {}) => {
                 setName && setName('')
                 setDescription && setDescription('')
                 setCoeff && setCoeff('')
-                props.setLname && props.setName('')
+                props.setLname && props.setLname('')
                 props.setFname && props.setFname('')
                 props.setSexe && props.setSexe('M')
                 props.setBornPlace && props.setBornPlace('')
