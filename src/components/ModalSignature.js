@@ -1,8 +1,8 @@
-import { Fragment, useRef } from 'react'
+import { Fragment } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import { useUser } from '@/hooks/user'
 import SignatureCanvas from 'react-signature-canvas'
-import Button from '@/Components/Button'
+import Button from '@/components/Button'
 import {useState} from 'react'
 import AuthValidationErrors from '@/components/AuthValidationErrors'
 

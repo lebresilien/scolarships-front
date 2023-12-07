@@ -6,7 +6,7 @@ import Input from '@/components/Input'
 import Label from '@/components/Label'
 import settings from '../assets/images/settings.jpg'
 import Image from 'next/image'
-import Button from '@/Components/Button'
+import Button from '@/components/Button'
 import { BsEyeSlashFill, BsEyeFill } from "react-icons/bs"
 import { AiOutlineSetting, AiFillExclamationCircle } from "react-icons/ai"
 /* import { firstCharacter } from '@/hooks/utils'
