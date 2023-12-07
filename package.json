@@ -34,14 +34,5 @@
     "tailwindcss": "^2.0.2"
   },
   "devDependencies": {
-    "@babel/eslint-parser": "^7.12.1",
-    "@next/eslint-plugin-next": "^10.0.4",
-    "babel-eslint": "^10.1.0",
-    "eslint": "^7.17.0",
-    "eslint-config-prettier": "^7.1.0",
-    "eslint-plugin-next": "^0.0.0",
-    "eslint-plugin-prettier": "^3.3.0",
-    "eslint-plugin-react": "^7.22.0",
-    "prettier": "2.2.1"
   }
 }
