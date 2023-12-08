@@ -62,7 +62,7 @@ const Courses = () => {
 
                                                 {sequences?.map((seq, index) => (
                                                     <Button key={index} className={'mt-2'}>
-                                                        <Link href={`/classrooms/${id}/courses/${course.id}/sequences/${seq.id}/notes`}><a target='_blank'>{ seq.name }</a></Link>
+                                                        <Link href={`/classrooms/${id}/courses/${course.id}/sequences/${seq.id}/notes`}>{ seq.name }</Link>
                                                     </Button>
                                                 ))}
                                                 

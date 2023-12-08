@@ -26,6 +26,17 @@ const customStyles = {
 
 const type = 'sequences'
 
+const options = [
+    {
+        value: 1,
+        label: 'Active'
+    },
+    {
+        value: 0,
+        label: 'Inactive'
+    },
+]
+
 const Sequence = () => {
 
     const [state, setState] = useState([])
@@ -42,6 +53,8 @@ const Sequence = () => {
     const [toggleCleared, setToggleCleared] = useState(false)
     const [waiting, setWaiting] = useState(false)
     const [errors, setErrors] = useState([])
+    const [selectedStatus, setSelectedStatus] = useState({})
+    const [status, setStatus] = useState('')
 
     const ref = useRef(null);
     
@@ -71,18 +84,25 @@ const Sequence = () => {
 
     },[])
 
-    const showModalUpdate = (id, name, description) => {
+    const showModalUpdate = (id, name, description, status) => {
         setUpdate(true)
         setShowModal(true)
         setName(name)
         setId(id)
+        setStatus(status)
         setDescription(description)
+        setSelectedStatus({value: status, label: status == 1 ? 'Active' : "Inactive"})
     }
 
     const columns = [
         {
             name: 'Nom',
             selector: row => row.name,
+            sortable: true,
+        },
+        {
+            name: 'Etat',
+            selector: row => <div className="rounded-full shadow-xl">{row.status ?  "Actif" : "Inactif"}</div>,
             sortable: true,
         },
         {
@@ -98,8 +118,8 @@ const Sequence = () => {
             name: 'Operations',
             selector: row => 
                 <div className="flex flex-row">
-                    <FaEdit className="cursor-pointer mr-2" size={25} onClick={() => showModalUpdate(row.id, row.name, row.description)}/>
-                    <Link href={`${type}/${row.id}/statistics`}><a target="_blank"><BsBarChartFill className="cursor-pointer mr-2" size={25} title="Statistiques" /></a></Link>
+                    <FaEdit className="cursor-pointer mr-2" size={25} onClick={() => showModalUpdate(row.id, row.name, row.description, row.status)}/>
+                    <Link href={`${type}/${row.id}/statistics`}><BsBarChartFill className="cursor-pointer mr-2" size={25} title="Statistiques" /></Link>
                     <Link href={`${type}/${row.id}`}><FaInfoCircle className="cursor-pointer mr-2" size={25} /></Link>
                 </div>
         }
@@ -201,6 +221,11 @@ const Sequence = () => {
                 save={add}
                 edit={edit}
                 type={type}
+                options={options}
+                status={status}
+                setStatus={setStatus}
+                selectedStatus={selectedStatus}
+                setSelectedStatus={setSelectedStatus}
             />
 
         </AppLayout>

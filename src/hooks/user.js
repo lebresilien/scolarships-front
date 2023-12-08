@@ -59,7 +59,6 @@ export const useUser = ({ middleware  } = {}) => {
         await csrf()
         axios.get('/api/v1/classrooms/'+id+'/courses')
         .then(res => {
-            console.log('console log', res.data)
             setCourses(res.data.courses)
             setSequences(res.data.sequences)
         })
@@ -98,7 +97,6 @@ export const useUser = ({ middleware  } = {}) => {
         await csrf()
         axios.get('/api/v1/statistics')
         .then(res => {
-            console.log('months-------', res.data.data.transactions.months)
             setData(res.data.data)
             setLoading(false)
         })   
@@ -432,6 +430,7 @@ export const useUser = ({ middleware  } = {}) => {
                     const currentItem = copySection.find(item => item.id === id)
                     if(type !== "transactions") currentItem.name = props.name
                     if(type === "transactions") currentItem.title = props.name
+                    if(type === "sequences") currentItem.status = props.status
                     if(props.amount) currentItem.amount = props.amount
                     if(props.description) currentItem.description = props.description
                     if(props.day) currentItem.day = props.day

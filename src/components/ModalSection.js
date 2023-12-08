@@ -70,7 +70,12 @@ const ModalSection = ({
     classroom_id,
     setClassroom_id,
     amount, 
-    setAmount
+    setAmount,
+    options,
+    status,
+    setStatus,
+    selectedStatus,
+    setSelectedStatus
  }) => {
 
     const [errors, setErrors] = useState([])
@@ -114,7 +119,8 @@ const ModalSection = ({
                 born_place,
                 sexe,
                 fname,
-                lname
+                lname,
+                status
             }) :
             save({ 
                 fees, 
@@ -181,8 +187,13 @@ const ModalSection = ({
     }
 
     const handleChangeOther = (newValue) => {
-        setBuilding_id(newValue.value)
+        setBuilding_id && setBuilding_id(newValue.value)
         update && setSelectedOther(newValue)
+    }
+
+    const handleChangeStatus = (newValue) => {
+        setStatus(newValue.value)
+        setSelectedStatus(newValue)
     }
 
 
@@ -255,6 +266,15 @@ const ModalSection = ({
                                                 </div>
                                             ))}
 
+                                            {type == "sequences" && update && ((
+                                                <div className="mt-2 pt-3">
+                                                    <Label htmlFor="state">Etat </Label>
+                                                    <div>
+                                                        <Select options={options} onChange={handleChangeStatus} value={selectedStatus} />
+                                                    </div>
+                                                </div>
+                                            ))}
+                                            
                                             {additional && type !== 'students' && ((
                                                 <div className="mt-2 pt-3">
                                                     <Label htmlFor="description">Selectioner le groupe </Label>

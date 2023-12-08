@@ -13,6 +13,7 @@ import 'react-toastify/dist/ReactToastify.css'
 const Notes = () => {
 
     const [data, setData] = useState({
+        status: null,
         sequence: '',
         classroom: '',
         course: '',
@@ -69,9 +70,17 @@ const Notes = () => {
 
                     <div className="py-12">
                         <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                            <div className="overflow-hidden shadow-sm sm:rounded-lg">
+                            <div className="overflow-hidden">
                                 
-                                <div className="py-6 border-b border-gray-200">
+                                <div className="flex flex-col text-center">
+
+                                    {!data?.status &&
+                                        <div
+                                            className="mb-5 rounded-lg bg-red-100 px-6 py-5 text-base text-red-700"
+                                            role="alert">
+                                            La sequence a été desactivée.Impossible de modifier les notes
+                                        </div>
+                                    }
 
                                     <form onSubmit={submitForm}>
                                         <div className="flex mx-3 sm:mx-0 overflow-x-auto justify-center">
@@ -97,11 +106,13 @@ const Notes = () => {
                                                             </td>
                                                             <td class="px-6 py-4">
                                                                 <Input
+                                                                    disabled={!data?.status}
                                                                     id={student.id}
                                                                     type="number"
                                                                     className="block mt-1 w-full"
                                                                     required
                                                                     min={0}
+                                                                    max={20}
                                                                     name="value"
                                                                     value={student.value}
                                                                     onChange={event => handleFormChange(index, event)}
@@ -117,7 +128,7 @@ const Notes = () => {
                                         </div>
 
                                         <div className='flex mt-3 justify-center md:justify-end md:mx-3'>
-                                            <Button type='submit'>
+                                            <Button type='submit' disabled={!data.status}>
                                                 {pending ? 'Enregistrement...' : 'Enregistrer'} 
                                             </Button>
                                         </div>
