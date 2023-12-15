@@ -76,7 +76,7 @@ const Notes = () => {
 
                                     {!data?.status &&
                                         <div
-                                            className="mb-5 rounded-lg bg-red-100 px-6 py-5 text-base text-red-700"
+                                            className="mb-5 roundedg justify-center bg-red-100 px-6 py-5 text-base text-red-700"
                                             role="alert">
                                             La sequence a été desactivée.Impossible de modifier les notes
                                         </div>
